@@ -147,14 +147,14 @@ publish-paks: ## Publish agent skills to Playbooks.com (Paks registry)
 	url="https://github.com/$(OWNER)/aiready-skills.git"; \
 	remote="aiready-skills"; \
 	git remote add "$$remote" "$$url" 2>/dev/null || git remote set-url "$$remote" "$$url"; \
-	$(call log_info,Tagging public repo with $$tag...); \
-	git tag -f $$tag; \
-	git push -f "$$remote" $$tag; \
-	cd packages/skills && paks publish aiready-best-practices --tag $$tag --yes || { \
+	$(call log_info,Tagging public repo with $$version...); \
+	git tag -f $$version; \
+	git push -f "$$remote" $$version; \
+	cd packages/skills && paks publish aiready-best-practices --tag $$version --yes || { \
 		$(call log_error,Paks publish failed); \
 		exit 1; \
 	}
-	@$(call log_success,Published skills to Playbooks.com using tag $$tag)
+	@$(call log_success,Published skills to Playbooks.com using tag $$version)
 
 publish-pattern-detect: ## Publish @aiready/pattern-detect to GitHub (shortcut for: make publish SPOKE=pattern-detect)
 	@$(MAKE) publish SPOKE=pattern-detect OWNER=$(OWNER)
