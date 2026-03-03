@@ -3,29 +3,30 @@
 import { motion } from 'framer-motion';
 import ParallaxSection from './ParallaxSection';
 import AnimatedStats from './AnimatedStats';
+import { Brain, DollarSign, Compass, Zap } from 'lucide-react';
 
 export function Benefits() {
   const items = [
     {
-      icon: '🧠',
+      icon: <Brain className="w-8 h-8" />,
       title: 'Stop AI Hallucinations',
       desc: 'Improve AI signal clarity to prevent models from generating incorrect or risky code.',
       color: 'from-blue-600 to-cyan-600',
     },
     {
-      icon: '💰',
+      icon: <DollarSign className="w-8 h-8" />,
       title: 'Predictive ROI',
       desc: 'Quantify exactly how much technical debt is costing your team in AI efficiency.',
       color: 'from-purple-600 to-pink-600',
     },
     {
-      icon: '🛰️',
+      icon: <Compass className="w-8 h-8" />,
       title: 'Agentic Navigation',
       desc: 'Ensure your codebase is structured so autonomous agents can work independently.',
       color: 'from-orange-500 to-red-500',
     },
     {
-      icon: '🔥',
+      icon: <Zap className="w-8 h-8" />,
       title: 'Cut Context Waste',
       desc: 'Stop burning tokens on redundant context. Optimize your repo for the 1M+ token era.',
       color: 'from-red-500 to-pink-600',
@@ -55,7 +56,7 @@ export function Benefits() {
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 gap-8">
               {items.map((item, i) => (
                 <motion.div
                   key={i}
@@ -66,7 +67,7 @@ export function Benefits() {
                   className="relative bg-white border-2 border-slate-200 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all"
                 >
                   <div
-                    className={`w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-2xl shadow-lg bg-gradient-to-r ${item.color}`}
+                    className={`w-14 h-14 rounded-xl mb-4 flex items-center justify-center text-white shadow-lg bg-gradient-to-r ${item.color}`}
                   >
                     {item.icon}
                   </div>

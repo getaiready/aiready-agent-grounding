@@ -3,6 +3,13 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import AgentPrompt from './AgentPrompt';
+import {
+  Rocket,
+  Package,
+  Terminal as TerminalIcon,
+  Bot,
+  ArrowRight,
+} from 'lucide-react';
 
 const words = ['AI-Ready', 'Model-Aware', 'Agentic', 'ROI-Driven'];
 
@@ -51,12 +58,12 @@ export default function AnimatedHero() {
         variants={itemVariants}
         className="inline-flex items-center gap-2 px-4 py-2 mb-8 bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 text-sm font-medium rounded-full border border-blue-200 shadow-lg"
       >
-        <motion.span
+        <motion.div
           animate={{ rotate: [0, 360] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
         >
-          🚀
-        </motion.span>
+          <Rocket className="w-4 h-4" />
+        </motion.div>
         <span>Open Source & Free Forever</span>
       </motion.div>
 
@@ -110,12 +117,12 @@ export default function AnimatedHero() {
           className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl shadow-xl inline-flex items-center justify-center gap-2 group"
         >
           See it in action
-          <motion.span
+          <motion.div
             animate={{ x: [0, 5, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            →
-          </motion.span>
+            <ArrowRight className="w-5 h-5" />
+          </motion.div>
         </motion.a>
         <motion.a
           href="https://www.npmjs.com/package/@aiready/cli"
@@ -124,8 +131,8 @@ export default function AnimatedHero() {
           whileTap={{ scale: 0.95 }}
           className="px-8 py-4 bg-white text-slate-900 font-bold rounded-xl border-2 border-slate-200 shadow-lg inline-flex items-center justify-center gap-2 hover:border-slate-300"
         >
-          <span>📦</span>
-          View on npm
+          <Package className="w-5 h-5 text-slate-400" />
+          <span>View on npm</span>
         </motion.a>
       </motion.div>
 
@@ -136,23 +143,25 @@ export default function AnimatedHero() {
       >
         <button
           onClick={() => setActiveTab('terminal')}
-          className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+          className={`px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${
             activeTab === 'terminal'
               ? 'bg-slate-900 text-white shadow-lg'
               : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
         >
-          💻 Terminal
+          <TerminalIcon className="w-4 h-4" />
+          Terminal
         </button>
         <button
           onClick={() => setActiveTab('agent')}
-          className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+          className={`px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${
             activeTab === 'agent'
               ? 'bg-slate-900 text-white shadow-lg'
               : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
         >
-          🤖 AI Agent Prompt
+          <Bot className="w-4 h-4" />
+          AI Agent Prompt
         </button>
       </motion.div>
 
