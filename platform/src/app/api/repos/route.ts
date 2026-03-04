@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
           code: 'REPO_LIMIT_REACHED',
           currentCount: existingRepos.length,
           maxRepos,
-          upgradeUrl: 'https://getaiready.dev/pricing',
+          upgradeUrl: '/pricing',
         },
         { status: 403 }
       );

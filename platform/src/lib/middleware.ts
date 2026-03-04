@@ -180,10 +180,10 @@ function getUpgradeMessage(requiredPlan: Plan): {
   message: string;
 } {
   const urls: Record<Plan, string> = {
-    free: 'https://getaiready.dev/pricing',
-    pro: 'https://getaiready.dev/pricing#pro',
-    team: 'https://getaiready.dev/pricing#team',
-    enterprise: 'https://getaiready.dev/pricing#enterprise',
+    free: '/pricing',
+    pro: '/pricing#pro',
+    team: '/pricing#team',
+    enterprise: '/pricing#enterprise',
   };
 
   const messages: Record<Plan, string> = {

@@ -1,0 +1,423 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { signOut } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
+import type { ApiKey } from '@/lib/db';
+
+interface Props {
+  user: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+}
+
+export default function SettingsClient({ user }: Props) {
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [newKeyName, setNewKeyName] = useState('');
+  const [newlyCreatedKey, setNewlyCreatedKey] = useState<string | null>(null);
+  const [keysLoading, setKeysLoading] = useState(false);
+
+  useEffect(() => {
+    fetchApiKeys();
+  }, []);
+
+  async function fetchApiKeys() {
+    try {
+      const res = await fetch('/api/keys');
+      const data = await res.json();
+      if (res.ok) setApiKeys(data.keys);
+    } catch (err) {
+      console.error('Failed to fetch API keys:', err);
+    }
+  }
+
+  async function handleCreateKey(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newKeyName) return;
+    setKeysLoading(true);
+    try {
+      const res = await fetch('/api/keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newKeyName }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setNewlyCreatedKey(data.key);
+        setNewKeyName('');
+        fetchApiKeys();
+        toast.success('API key generated');
+      }
+    } catch (err) {
+      console.error('Failed to create API key:', err);
+      toast.error('Failed to generate API key');
+    } finally {
+      setKeysLoading(false);
+    }
+  }
+
+  async function handleDeleteKey(id: string) {
+    if (!confirm('Delete this API key?')) return;
+    try {
+      const res = await fetch(`/api/keys?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setApiKeys((prev) => prev.filter((k) => k.id !== id));
+        toast.success('API key deleted');
+      }
+    } catch (err) {
+      console.error('Failed to delete API key:', err);
+      toast.error('Failed to delete API key');
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0f] relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="orb orb-blue w-96 h-96 -top-48 -right-48 opacity-30" />
+        <div className="orb orb-purple w-80 h-80 bottom-0 -left-40 opacity-30" />
+      </div>
+      <div className="absolute inset-0 bg-grid-pattern opacity-30" />
+
+      {/* Header */}
+      <header className="glass sticky top-0 z-20 border-b border-indigo-500/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-4">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center cursor-pointer"
+                onClick={() => (window.location.href = '/dashboard')}
+              >
+                <Image
+                  src="/logo-text-transparent-dark-theme.png"
+                  alt="AIReady"
+                  width={140}
+                  height={40}
+                  className="h-8 w-auto"
+                  priority
+                />
+              </motion.div>
+              <nav className="hidden md:flex items-center gap-6 ml-6">
+                <a
+                  href="/dashboard"
+                  className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
+                >
+                  Dashboard
+                </a>
+                <a
+                  href="/settings"
+                  className="text-sm font-medium text-cyan-400 border-b-2 border-cyan-400 pb-0.5"
+                >
+                  Settings
+                </a>
+              </nav>
+            </div>
+            <div className="flex items-center gap-3">
+              {user.image && (
+                <img
+                  src={user.image}
+                  alt={user.name || 'User'}
+                  className="w-8 h-8 rounded-full border-2 border-cyan-500/50"
+                />
+              )}
+              <span className="text-sm text-slate-300 hidden sm:block">
+                {user.name || user.email}
+              </span>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="text-sm text-slate-400 hover:text-red-400 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-500/10"
+              >
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Profile Section */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20">
+              <svg
+                className="w-6 h-6 text-indigo-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">
+                Profile Settings
+              </h1>
+              <p className="text-slate-400 text-sm">
+                Manage your account and developer access.
+              </p>
+            </div>
+          </div>
+
+          <div className="glass-card rounded-3xl p-8 border border-white/5 space-y-8">
+            <div className="flex items-center gap-6">
+              <div className="relative">
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    className="w-20 h-20 rounded-2xl border-2 border-indigo-500/30"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl text-slate-500 font-bold">
+                    {user.name?.[0] || user.email?.[0]}
+                  </div>
+                )}
+                <div className="absolute -bottom-2 -right-2 bg-indigo-600 p-1.5 rounded-lg border-2 border-[#0a0a0f]">
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-white">
+                  {user.name || 'User'}
+                </h3>
+                <p className="text-slate-400 text-sm">{user.email}</p>
+                <div className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  Standard Member
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* API Keys Section */}
+        <section className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-cyan-500/10 rounded-2xl border border-cyan-500/20">
+              <svg
+                className="w-6 h-6 text-cyan-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white">API Keys</h2>
+              <p className="text-slate-400 text-sm">
+                Create and manage keys for the AIReady CLI.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6">
+            <div className="glass-card rounded-3xl p-8 border border-white/5 h-fit">
+              <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                Generate New Key
+              </h3>
+              <form onSubmit={handleCreateKey} className="flex gap-4">
+                <input
+                  type="text"
+                  placeholder="What is this key for? (e.g. CI/CD)"
+                  value={newKeyName}
+                  onChange={(e) => setNewKeyName(e.target.value)}
+                  className="flex-1 bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={keysLoading}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-sm font-bold rounded-xl shadow-lg hover:shadow-cyan-500/25 transition-all disabled:opacity-50"
+                >
+                  {keysLoading ? 'Generating...' : 'Create Key'}
+                </button>
+              </form>
+            </div>
+
+            <div className="glass-card rounded-3xl overflow-hidden border border-white/5 bg-slate-900/20">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="bg-slate-800/40 text-slate-400 border-b border-white/5">
+                      <th className="px-8 py-5 font-semibold uppercase tracking-wider text-[11px]">
+                        Name
+                      </th>
+                      <th className="px-8 py-5 font-semibold uppercase tracking-wider text-[11px]">
+                        Key Prefix
+                      </th>
+                      <th className="px-8 py-5 font-semibold uppercase tracking-wider text-[11px]">
+                        Created
+                      </th>
+                      <th className="px-8 py-5 font-semibold uppercase tracking-wider text-[11px] text-right">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {apiKeys.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="px-8 py-12 text-center text-slate-500 italic"
+                        >
+                          No active API keys found.
+                        </td>
+                      </tr>
+                    ) : (
+                      apiKeys.map((key) => (
+                        <tr
+                          key={key.id}
+                          className="hover:bg-white/[0.02] transition-colors"
+                        >
+                          <td className="px-8 py-5 text-white font-semibold">
+                            {key.name}
+                          </td>
+                          <td className="px-8 py-5 font-mono text-cyan-400">
+                            {key.prefix}••••••••
+                          </td>
+                          <td className="px-8 py-5 text-slate-400">
+                            {new Date(key.createdAt).toLocaleDateString(
+                              undefined,
+                              {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                              }
+                            )}
+                          </td>
+                          <td className="px-8 py-5 text-right">
+                            <button
+                              onClick={() => handleDeleteKey(key.id)}
+                              className="px-3 py-1.5 text-xs text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                            >
+                              Deactivate
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* New Key Modal */}
+      <AnimatePresence>
+        {newlyCreatedKey && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-[60] p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="glass-card rounded-3xl p-10 max-w-lg w-full border border-cyan-500/30 shadow-[0_0_100px_-20px_rgba(6,182,212,0.3)]"
+            >
+              <div className="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center mb-8 mx-auto border border-cyan-500/20">
+                <svg
+                  className="w-8 h-8 text-cyan-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+
+              <h3 className="text-2xl font-bold text-white text-center mb-2">
+                Key Generated Successfully
+              </h3>
+              <p className="text-slate-400 text-center text-sm mb-8 leading-relaxed">
+                Copy this key now. It provides full access to your account via
+                the CLI and{' '}
+                <span className="text-white font-medium">
+                  cannot be shown again
+                </span>{' '}
+                for security reasons.
+              </p>
+
+              <div className="bg-black/40 border border-cyan-500/20 rounded-2xl p-6 flex flex-col items-center gap-4 mb-8">
+                <code className="text-cyan-300 font-mono text-xl tracking-tight break-all text-center">
+                  {newlyCreatedKey}
+                </code>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(newlyCreatedKey);
+                    toast.success('Copied to clipboard!');
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-xs font-bold rounded-lg border border-cyan-500/20 transition-all"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                    />
+                  </svg>
+                  Copy Secret Key
+                </button>
+              </div>
+
+              <button
+                onClick={() => setNewlyCreatedKey(null)}
+                className="w-full py-4 bg-white text-[#0a0a0f] font-black rounded-2xl shadow-xl hover:bg-slate-100 transition-all text-sm uppercase tracking-widest"
+              >
+                I've backed up this key
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

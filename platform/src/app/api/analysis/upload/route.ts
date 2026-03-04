@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
             new Date().getMonth() + 1,
             1
           ).toISOString(),
-          upgradeUrl: 'https://getaiready.dev/pricing',
+          upgradeUrl: '/pricing',
         },
         { status: 403 }
       );

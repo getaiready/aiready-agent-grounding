@@ -2,9 +2,18 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RocketIcon } from '@/components/Icons';
+import {
+  RocketIcon,
+  PlayIcon,
+  UploadIcon,
+  FileIcon,
+  ShieldIcon,
+  TrendingUpIcon,
+  TrashIcon,
+} from '@/components/Icons';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import {
@@ -147,57 +156,6 @@ export default function DashboardClient({
     id: string;
     name: string;
   } | null>(null);
-
-  useEffect(() => {
-    fetchApiKeys();
-  }, []);
-
-  async function fetchApiKeys() {
-    try {
-      const res = await fetch('/api/keys');
-      const data = await res.json();
-      if (res.ok) setApiKeys(data.keys);
-    } catch (err) {
-      console.error('Failed to fetch API keys:', err);
-    }
-  }
-
-  async function handleCreateKey(e: React.FormEvent) {
-    e.preventDefault();
-    if (!newKeyName) return;
-    setKeysLoading(true);
-    try {
-      const res = await fetch('/api/keys', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newKeyName }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setNewlyCreatedKey(data.key);
-        setNewKeyName('');
-        fetchApiKeys();
-      }
-    } catch (err) {
-      console.error('Failed to create API key:', err);
-    } finally {
-      setKeysLoading(false);
-    }
-  }
-
-  async function handleDeleteKey(id: string) {
-    if (!confirm('Delete this API key?')) return;
-    try {
-      const res = await fetch(`/api/keys?id=${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setApiKeys((prev) => prev.filter((k) => k.id !== id));
-        toast.success('API key deleted');
-      }
-    } catch (err) {
-      console.error('Failed to delete API key:', err);
-      toast.error('Failed to delete API key');
-    }
-  }
 
   async function handleCheckout(plan: 'pro' | 'team') {
     try {
@@ -419,10 +377,10 @@ export default function DashboardClient({
                   Dashboard
                 </a>
                 <a
-                  href="/docs"
+                  href="/settings"
                   className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
                 >
-                  Docs
+                  Settings
                 </a>
               </nav>
             </div>
@@ -593,12 +551,12 @@ export default function DashboardClient({
               </div>
             )}
             {currentTeamId === 'personal' && (
-              <a
-                href="#pricing"
+              <Link
+                href="/pricing"
                 className="text-xs text-cyan-400 hover:underline font-bold"
               >
                 Pricing
-              </a>
+              </Link>
             )}
           </div>
         </motion.div>
@@ -814,88 +772,6 @@ export default function DashboardClient({
           </motion.section>
         )}
 
-        {/* API Keys section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-white">API Keys</h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 glass-card rounded-2xl p-6 h-fit">
-              <h3 className="text-sm font-semibold text-white mb-4">
-                Create New Key
-              </h3>
-              <form onSubmit={handleCreateKey} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="e.g., GitHub Actions"
-                  value={newKeyName}
-                  onChange={(e) => setNewKeyName(e.target.value)}
-                  className="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={keysLoading}
-                  className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg border border-slate-700 transition-colors disabled:opacity-50"
-                >
-                  {keysLoading ? 'Generating...' : 'Generate New Key'}
-                </button>
-              </form>
-            </div>
-
-            <div className="lg:col-span-2 glass-card rounded-2xl overflow-hidden border border-indigo-500/10">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="bg-slate-800/50 text-slate-400 border-b border-slate-700/50">
-                    <th className="px-6 py-3 font-medium">Name</th>
-                    <th className="px-6 py-3 font-medium">Key</th>
-                    <th className="px-6 py-3 font-medium">Created</th>
-                    <th className="px-6 py-3 font-medium text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-700/30">
-                  {apiKeys.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={4}
-                        className="px-6 py-8 text-center text-slate-500 italic"
-                      >
-                        No API keys yet.
-                      </td>
-                    </tr>
-                  ) : (
-                    apiKeys.map((key) => (
-                      <tr
-                        key={key.id}
-                        className="hover:bg-slate-800/20 transition-colors"
-                      >
-                        <td className="px-6 py-4 text-white font-medium">
-                          {key.name}
-                        </td>
-                        <td className="px-6 py-4 font-mono text-cyan-400">
-                          {key.prefix}
-                        </td>
-                        <td className="px-6 py-4 text-slate-400">
-                          {new Date(key.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => handleDeleteKey(key.id)}
-                            className="text-slate-500 hover:text-red-400 transition-colors"
-                          >
-                            Revoke
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
         {/* Team Management Section */}
         {currentTeamId !== 'personal' && (
           <TeamManagement
@@ -906,68 +782,6 @@ export default function DashboardClient({
           />
         )}
       </main>
-
-      {/* New Key Modal */}
-      <AnimatePresence>
-        {newlyCreatedKey && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[60] p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              className="glass-card rounded-2xl p-8 max-w-md w-full border border-cyan-500/30 shadow-[0_0_50px_-12px_rgba(6,182,212,0.5)]"
-            >
-              <h3 className="text-xl font-bold text-white mb-2">
-                New API Key Created
-              </h3>
-              <p className="text-slate-400 text-sm mb-6">
-                Please copy your API key now. For security reasons, it will only
-                be shown once.
-              </p>
-
-              <div className="bg-black/40 border border-cyan-500/20 rounded-xl p-4 flex items-center justify-between gap-3 mb-8">
-                <code className="text-cyan-400 font-mono text-lg break-all">
-                  {newlyCreatedKey}
-                </code>
-                <button
-                  onClick={() => {
-                    if (newlyCreatedKey) {
-                      navigator.clipboard.writeText(newlyCreatedKey);
-                      alert('Copied to clipboard!');
-                    }
-                  }}
-                  className="bg-cyan-500/10 hover:bg-cyan-500/20 p-2 rounded-lg text-cyan-400 border border-cyan-500/20"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <button
-                onClick={() => setNewlyCreatedKey(null)}
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl shadow-lg hover:shadow-cyan-500/20 transition-all"
-              >
-                I've secured the key
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Add Repository Modal */}
       <AnimatePresence>
@@ -1202,53 +1016,58 @@ function RepoCard({
       )}
 
       {/* Actions */}
-      <div className="flex gap-2 pt-2 border-t border-slate-700/50">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={onScan}
-          disabled={scanning}
-          className="flex-1 px-3 py-2.5 bg-indigo-500/10 text-indigo-400 text-xs font-medium rounded-lg hover:bg-indigo-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/30"
-        >
-          {scanning ? 'Scanning...' : 'Scan Now'}
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={onUpload}
-          disabled={uploading}
-          className="px-3 py-2.5 bg-cyan-500/10 text-cyan-400 text-xs font-medium rounded-lg hover:bg-cyan-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-cyan-500/30"
-        >
-          {uploading ? 'Uploading...' : 'Upload JSON'}
-        </motion.button>
-        <button
-          onClick={() => window.open(`/api/agent/metadata?repoId=${repo.id}`)}
-          className="px-3 py-2.5 bg-slate-800 text-slate-400 text-xs font-medium rounded-lg hover:bg-slate-700 hover:text-white transition-colors border border-slate-700"
-          title="Download ai-ready.json"
-        >
-          📄
-        </button>
-        <button
-          onClick={onBadge}
-          className="px-3 py-2.5 bg-slate-800 text-slate-400 text-xs font-medium rounded-lg hover:bg-slate-700 hover:text-white transition-colors border border-slate-700"
-          title="Share AI-Readiness Badge"
-        >
-          🛡️
-        </button>
-        <button
-          onClick={onViewTrends}
-          className="px-3 py-2.5 bg-slate-800 text-slate-400 text-xs font-medium rounded-lg hover:bg-slate-700 hover:text-white transition-colors border border-slate-700"
-          title="View Trends"
-        >
-          📈
-        </button>
-        <button
-          onClick={onDelete}
-          className="px-3 py-2.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 text-xs font-medium rounded-lg transition-colors border border-transparent hover:border-red-500/30"
-          title="Delete repository"
-        >
-          Delete
-        </button>
+      <div className="flex flex-col gap-3 pt-3 border-t border-slate-700/50">
+        <div className="flex gap-2">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onScan}
+            disabled={scanning}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-indigo-500/10 text-indigo-400 text-xs font-bold rounded-lg hover:bg-indigo-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/30"
+          >
+            <PlayIcon className="w-3.5 h-3.5" />
+            {scanning ? 'Scanning...' : 'Scan Now'}
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onUpload}
+            disabled={uploading}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-cyan-500/10 text-cyan-400 text-xs font-bold rounded-lg hover:bg-cyan-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-cyan-500/30"
+          >
+            <UploadIcon className="w-3.5 h-3.5" />
+            {uploading ? 'Uploading...' : 'Upload JSON'}
+          </motion.button>
+        </div>
+
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex gap-3">
+            <IconButton
+              onClick={() =>
+                window.open(`/api/agent/metadata?repoId=${repo.id}`)
+              }
+              icon={<FileIcon className="w-4 h-4" />}
+              tooltip="Download Metadata"
+            />
+            <IconButton
+              onClick={onBadge}
+              icon={<ShieldIcon className="w-4 h-4" />}
+              tooltip="AI-Readiness Badge"
+            />
+            <IconButton
+              onClick={onViewTrends}
+              icon={<TrendingUpIcon className="w-4 h-4" />}
+              tooltip="View Trends"
+            />
+          </div>
+
+          <IconButton
+            onClick={onDelete}
+            icon={<TrashIcon className="w-4 h-4" />}
+            tooltip="Delete Repository"
+            variant="danger"
+          />
+        </div>
       </div>
 
       {repo.lastAnalysisAt && (
@@ -1257,6 +1076,37 @@ function RepoCard({
         </p>
       )}
     </motion.div>
+  );
+}
+
+function IconButton({
+  onClick,
+  icon,
+  tooltip,
+  variant = 'default',
+}: {
+  onClick: () => void;
+  icon: React.ReactNode;
+  tooltip: string;
+  variant?: 'default' | 'danger';
+}) {
+  return (
+    <div className="relative group">
+      <button
+        onClick={onClick}
+        className={`p-2 rounded-lg transition-all border ${
+          variant === 'danger'
+            ? 'text-slate-500 hover:text-red-400 hover:bg-red-500/10 border-transparent hover:border-red-500/30'
+            : 'bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700/50 border-slate-700/50'
+        }`}
+      >
+        {icon}
+      </button>
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] font-bold rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-30 border border-slate-700 shadow-xl">
+        {tooltip}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
+      </div>
+    </div>
   );
 }
 
