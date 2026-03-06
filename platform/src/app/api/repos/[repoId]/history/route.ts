@@ -16,9 +16,16 @@ export async function GET(
     const searchParams = request.nextUrl.searchParams;
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    const analyses = await listRepositoryAnalyses(repoId, limit);
+    const analyses = await listRepositoryAnalyses(repoId, limit + 5); // Fetch a few extra to account for filtering
 
-    return NextResponse.json({ analyses });
+    // Filter for completed scans or legacy records with valid scores
+    const filtered = analyses
+      .filter(
+        (a) => a.status === 'completed' || (!a.status && (a.aiScore || 0) > 0)
+      )
+      .slice(0, limit);
+
+    return NextResponse.json({ analyses: filtered });
   } catch (error) {
     console.error('Failed to fetch analysis history:', error);
     return NextResponse.json(
