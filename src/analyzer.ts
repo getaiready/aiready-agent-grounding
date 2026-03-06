@@ -4,6 +4,8 @@ import {
   scanFiles,
   calculateChangeAmplification,
   getParser,
+  Severity,
+  IssueType,
 } from '@aiready/core';
 import type {
   ChangeAmplificationOptions,
@@ -83,12 +85,22 @@ export async function analyzeChangeAmplification(
 
   const results: FileChangeAmplificationResult[] = [];
 
+  // Helper for severity mapping
+  const getLevel = (s: any): number => {
+    if (s === Severity.Critical || s === 'critical') return 4;
+    if (s === Severity.Major || s === 'major') return 3;
+    if (s === Severity.Minor || s === 'minor') return 2;
+    if (s === Severity.Info || s === 'info') return 1;
+    return 0;
+  };
+
   for (const hotspot of riskResult.hotspots) {
     const issues: ChangeAmplificationIssue[] = [];
     if (hotspot.amplificationFactor > 20) {
       issues.push({
-        type: 'change-amplification',
-        severity: hotspot.amplificationFactor > 40 ? 'critical' : 'major',
+        type: IssueType.ChangeAmplification,
+        severity:
+          hotspot.amplificationFactor > 40 ? Severity.Critical : Severity.Major,
         message: `High change amplification detected (Factor: ${hotspot.amplificationFactor}). Changes here cascade heavily.`,
         location: { file: hotspot.file, line: 1 },
         suggestion: `Reduce coupling. Fan-out is ${hotspot.fanOut}, Fan-in is ${hotspot.fanIn}.`,
@@ -113,11 +125,12 @@ export async function analyzeChangeAmplification(
       totalIssues: results.reduce((sum, r) => sum + r.issues.length, 0),
       criticalIssues: results.reduce(
         (sum, r) =>
-          sum + r.issues.filter((i) => i.severity === 'critical').length,
+          sum + r.issues.filter((i) => getLevel(i.severity) === 4).length,
         0
       ),
       majorIssues: results.reduce(
-        (sum, r) => sum + r.issues.filter((i) => i.severity === 'major').length,
+        (sum, r) =>
+          sum + r.issues.filter((i) => getLevel(i.severity) === 3).length,
         0
       ),
       score: riskResult.score,

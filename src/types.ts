@@ -1,17 +1,18 @@
-import type { ScanOptions, Issue } from '@aiready/core';
+import type {
+  ScanOptions,
+  AnalysisResult,
+  Issue,
+  IssueType,
+} from '@aiready/core';
 
-export type ChangeAmplificationOptions = ScanOptions;
+export interface ChangeAmplificationOptions extends ScanOptions {}
 
 export interface ChangeAmplificationIssue extends Issue {
-  type: 'change-amplification';
+  type: IssueType.ChangeAmplification;
 }
 
-export interface FileChangeAmplificationResult {
-  fileName: string;
+export interface FileChangeAmplificationResult extends AnalysisResult {
   issues: ChangeAmplificationIssue[];
-  metrics: {
-    aiSignalClarityScore?: number;
-  };
 }
 
 export interface ChangeAmplificationReport {
@@ -21,7 +22,7 @@ export interface ChangeAmplificationReport {
     criticalIssues: number;
     majorIssues: number;
     score: number;
-    rating: 'isolated' | 'contained' | 'amplified' | 'explosive';
+    rating: string;
     recommendations: string[];
   };
   results: FileChangeAmplificationResult[];
