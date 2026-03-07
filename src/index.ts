@@ -52,8 +52,10 @@ export {
 export {
   ScoreBar,
   ScoreCard,
+  ScoreCircle,
   type ScoreBarProps,
   type ScoreCardProps,
+  type ScoreCircleProps,
   type ScoreRating,
 } from './data-display';
 
