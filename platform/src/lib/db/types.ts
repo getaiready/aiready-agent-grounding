@@ -1,5 +1,5 @@
-import { AnalysisStatus, Severity } from '@aiready/core/client';
 import type { AIReadyConfig } from '@aiready/core';
+import { AnalysisStatus, Severity } from '@aiready/core/client';
 
 export interface User {
   id: string;
@@ -14,6 +14,7 @@ export interface User {
   role?: 'owner' | 'admin' | 'member';
   createdAt: string;
   updatedAt: string;
+  scanConfig?: AIReadyConfig;
 }
 
 export interface Team {
@@ -29,6 +30,7 @@ export interface Team {
   repoLimit: number;
   createdAt: string;
   updatedAt: string;
+  scanConfig?: AIReadyConfig;
 }
 
 export interface TeamMember {
@@ -85,7 +87,10 @@ export interface Analysis {
     totalIssues: number;
     criticalIssues: number;
     warnings: number;
+    executionTime?: number;
+    config?: AIReadyConfig;
   };
+  executionTime?: number;
   details?: any[];
   error?: string;
   createdAt: string;

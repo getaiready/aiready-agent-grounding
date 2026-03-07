@@ -1,6 +1,5 @@
-'use client';
-
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import PlatformShell from '@/components/PlatformShell';
 import type { ApiKey, Team, TeamMember } from '@/lib/db';
@@ -10,6 +9,9 @@ import { ApiAccessSection } from './components/ApiAccessSection';
 import { NewKeyModal } from './components/NewKeyModal';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
+import type { AIReadyConfig } from '@aiready/core';
+import { ScanConfigForm } from '../dashboard/repo/[id]/settings/ScanConfigForm';
+
 interface Props {
   user: {
     id: string;
@@ -18,13 +20,16 @@ interface Props {
     image?: string | null;
     githubId?: string | null;
     googleId?: string | null;
+    scanConfig?: AIReadyConfig;
   };
   teams: (TeamMember & { team: Team })[];
   overallScore: number | null;
 }
 
 export default function SettingsClient({ user, teams, overallScore }: Props) {
+  const router = useRouter();
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  // ... rest of state
   const [newKeyName, setNewKeyName] = useState('');
   const [newlyCreatedKey, setNewlyCreatedKey] = useState<string | null>(null);
   const [keysLoading, setKeysLoading] = useState(false);
@@ -93,6 +98,26 @@ export default function SettingsClient({ user, teams, overallScore }: Props) {
     }
   }
 
+  async function handleUpdateScanStrategy(settings: AIReadyConfig | null) {
+    try {
+      const res = await fetch('/api/user/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scanConfig: settings }),
+      });
+      if (res.ok) {
+        toast.success('Default scan strategy updated');
+        router.refresh();
+      } else {
+        throw new Error('Failed to update strategy');
+      }
+    } catch (err) {
+      console.error('Failed to update scan strategy:', err);
+      toast.error('Failed to save strategy');
+      throw err;
+    }
+  }
+
   return (
     <PlatformShell
       user={user}
@@ -100,9 +125,29 @@ export default function SettingsClient({ user, teams, overallScore }: Props) {
       overallScore={overallScore}
       activePage="settings"
     >
-      <div className="p-4 sm:p-6 lg:p-8 space-y-8">
-        <ProfileSection user={user} />
-        <IntegrationsSection user={user} />
+      <div className="p-4 sm:p-6 lg:p-8 space-y-12 max-w-5xl mx-auto">
+        <section className="space-y-6">
+          <ProfileSection user={user} />
+          <IntegrationsSection user={user} />
+        </section>
+
+        <section className="space-y-6">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl font-black tracking-tight text-white">
+              Default Scan Strategy
+            </h2>
+            <p className="text-slate-400 text-sm">
+              These settings will auto-apply to every repository you scan,
+              unless specifically overridden at the repository level.
+            </p>
+          </div>
+          <ScanConfigForm
+            repoId="global"
+            initialSettings={user.scanConfig || null}
+            onSave={handleUpdateScanStrategy}
+          />
+        </section>
+
         <ApiAccessSection
           apiKeys={apiKeys}
           newKeyName={newKeyName}

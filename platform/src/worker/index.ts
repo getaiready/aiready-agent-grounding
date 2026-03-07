@@ -112,8 +112,20 @@ export async function handler(event: SQSEvent) {
           exclude: ['**/node_modules/**', '**/dist/**', '**/.git/**'],
         },
         tools: {
-          [ToolName.PatternDetect]: { minSimilarity: 0.8, minLines: 5 },
-          [ToolName.ContextAnalyzer]: { maxDepth: 5, minCohesion: 0.6 },
+          [ToolName.PatternDetect]: {
+            minSimilarity: 0.8,
+            minLines: 5,
+            approx: true,
+            minSharedTokens: 10,
+            maxCandidatesPerBlock: 100,
+          },
+          [ToolName.ContextAnalyzer]: {
+            maxDepth: 5,
+            minCohesion: 0.6,
+            maxFragmentation: 0.4,
+            includeNodeModules: false,
+            focus: 'all',
+          },
           [ToolName.AiSignalClarity]: {
             checkMagicLiterals: true,
             checkBooleanTraps: true,
@@ -124,10 +136,50 @@ export async function handler(event: SQSEvent) {
           },
           [ToolName.AgentGrounding]: { maxRecommendedDepth: 4 },
           [ToolName.DocDrift]: { staleMonths: 6 },
+          [ToolName.DependencyHealth]: { trainingCutoffYear: 2024 },
+        },
+        scoring: {
+          threshold: 70,
         },
       };
 
-      const scanConfig = repo.scanConfig || recommendedDefaults;
+      // Hierarchical Scan Configuration Strategy:
+      // 1. Repository-specific override
+      // 2. Team-level default (if repo belongs to a team)
+      // 3. User-level default
+      // 4. Platform-wide recommended defaults
+      let scanConfig = repo.scanConfig;
+
+      if (!scanConfig) {
+        console.log(
+          `[ScanWorker] No repo-specific config. Checking fallbacks...`
+        );
+
+        // Try Team fallback
+        if (repo.teamId) {
+          const { getTeam } = await import('../lib/db/teams');
+          const team = await getTeam(repo.teamId);
+          if (team?.scanConfig) {
+            console.log(`[ScanWorker] Applying Team-level default config.`);
+            scanConfig = team.scanConfig;
+          }
+        }
+
+        // Try User fallback
+        if (!scanConfig) {
+          const user = await getUser(userId);
+          if (user?.scanConfig) {
+            console.log(`[ScanWorker] Applying User-level default config.`);
+            scanConfig = user.scanConfig;
+          }
+        }
+      }
+
+      // Final fallback to Recommended Defaults
+      if (!scanConfig) {
+        console.log(`[ScanWorker] Using platform-wide recommended defaults.`);
+        scanConfig = recommendedDefaults;
+      }
 
       const analysisResults = await analyzeUnified({
         rootDir: tempDir,

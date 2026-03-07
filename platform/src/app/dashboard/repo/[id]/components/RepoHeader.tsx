@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import {
   FileIcon,
+  InfoIcon,
   PlayIcon,
   RobotIcon,
   SettingsIcon,
@@ -18,9 +19,10 @@ import type { Repository } from '@/lib/db';
 interface RepoHeaderProps {
   repo: Repository;
   analysis: any;
+  onViewConfig?: () => void;
 }
 
-export function RepoHeader({ repo, analysis }: RepoHeaderProps) {
+export function RepoHeader({ repo, analysis, onViewConfig }: RepoHeaderProps) {
   return (
     <section className="flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div className="space-y-4">
@@ -56,10 +58,21 @@ export function RepoHeader({ repo, analysis }: RepoHeaderProps) {
           <h1 className="text-4xl font-black text-white leading-tight">
             {repo.name}
           </h1>
-          <p className="text-slate-400 max-w-2xl">
-            {repo.description ||
-              'Comprehensive AI-readiness analysis for this repository.'}
-          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="text-slate-400 max-w-2xl">
+              {repo.description ||
+                'Comprehensive AI-readiness analysis for this repository.'}
+            </p>
+            {onViewConfig && (
+              <button
+                onClick={onViewConfig}
+                className="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 rounded-xl border border-slate-700/50 transition-all text-[10px] font-bold uppercase tracking-widest"
+              >
+                <InfoIcon className="w-3 h-3" />
+                View Scan Config
+              </button>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-4 text-xs font-mono">
           <a
@@ -75,6 +88,12 @@ export function RepoHeader({ repo, analysis }: RepoHeaderProps) {
               <PlayIcon className="w-3.5 h-3.5 rotate-90" />
               Last analyzed{' '}
               {new Date(analysis.metadata.timestamp).toLocaleString()}
+              {analysis.summary.executionTime > 0 && (
+                <span className="ml-2 pl-2 border-l border-slate-800">
+                  Duration: {(analysis.summary.executionTime / 1000).toFixed(1)}
+                  s
+                </span>
+              )}
             </div>
           )}
         </div>

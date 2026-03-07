@@ -226,16 +226,11 @@ function RepoDetailContent({ repo, user, teams, overallScore }: Props) {
     >
       <div className="p-4 sm:p-6 lg:p-8 space-y-8 text-white">
         <div className="flex items-start justify-between">
-          <RepoHeader repo={repo} analysis={analysis} />
-          {analysis && (
-            <button
-              onClick={() => setShowConfig(true)}
-              className="mt-12 flex items-center gap-2 px-4 py-2 bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-cyan-400 rounded-xl border border-slate-700/50 transition-all text-xs font-bold uppercase tracking-widest"
-            >
-              <InfoIcon className="w-3.5 h-3.5" />
-              View Scan Config
-            </button>
-          )}
+          <RepoHeader
+            repo={repo}
+            analysis={analysis}
+            onViewConfig={() => setShowConfig(true)}
+          />
         </div>
 
         {loading ? (

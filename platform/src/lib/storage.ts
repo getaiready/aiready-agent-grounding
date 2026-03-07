@@ -51,6 +51,7 @@ export interface AnalysisData {
     totalIssues: number;
     criticalIssues: number;
     warnings: number;
+    executionTime?: number;
     config?: any;
   };
   breakdown: Record<
@@ -513,6 +514,7 @@ export function normalizeReport(
       totalIssues: summary.totalIssues || 0,
       criticalIssues: summary.criticalIssues || 0,
       warnings: summary.warnings || 0,
+      executionTime: summary.executionTime || source.executionTime || 0,
       config: summary.config || source.config || metadata.config,
     },
     breakdown,

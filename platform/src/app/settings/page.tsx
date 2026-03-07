@@ -62,6 +62,7 @@ export default async function SettingsPage() {
         image: user.image,
         githubId: user.githubId,
         googleId: user.googleId,
+        scanConfig: user.scanConfig,
       }}
       teams={teams}
       overallScore={overallScore}

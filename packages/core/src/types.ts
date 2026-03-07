@@ -346,6 +346,7 @@ export interface Report {
     overallScore: number;
     tokenCostTotal: number;
     avgConsistency: number;
+    executionTime?: number;
   };
 }
 
@@ -398,6 +399,8 @@ export interface GraphMetadata {
   infoIssues: number;
   /** AI token budget unit economics (v0.13+) */
   tokenBudget?: TokenBudget;
+  /** Execution time in milliseconds */
+  executionTime?: number;
 }
 
 /**
