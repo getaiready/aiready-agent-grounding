@@ -58,7 +58,7 @@ export function FeedbackWidget({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="absolute bottom-16 right-0 w-80 rounded-2xl p-4 bg-slate-900 border border-cyan-500/30 shadow-2xl backdrop-blur-xl"
+            className="absolute bottom-full mb-4 right-0 w-80 rounded-2xl p-4 bg-slate-900 border border-cyan-500/30 shadow-2xl backdrop-blur-xl top-auto"
           >
             <div className="flex items-center justify-between mb-4">
               <h4 className="font-bold text-white flex items-center gap-2 text-sm">
