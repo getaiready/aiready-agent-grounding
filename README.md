@@ -19,18 +19,18 @@ AIReady helps teams **assess, visualize, and prepare** repositories for better A
 
 ## 🌍 Language Support
 
-**Currently Supported (64% market coverage):**
+**Currently Supported (95% market coverage):**
 
 - ✅ **TypeScript** (`.ts`, `.tsx`)
 - ✅ **JavaScript** (`.js`, `.jsx`)
-- ✅ **Python** (`.py`) - NEW! PEP 8 conventions, import analysis, pattern detection
+- ✅ **Python** (`.py`) - PEP 8 conventions, docstrings, purity analysis
+- ✅ **Java** (`.java`) - Javadoc, visibility, purity analysis
+- ✅ **Go** (`.go`) - Export visibility, comments, purity analysis
+- ✅ **C#** (`.cs`) - XML-Doc, property-level tracking, purity analysis
 
 **Roadmap:**
 
-- 🔜 **Java** (Q3 2026) - Maven/Gradle, Spring Framework
-- 🔜 **Go** (Q4 2026) - Go modules, concurrency patterns
 - 🔜 **Rust** (Q4 2026) - Cargo, ownership patterns
-- 🔜 **C#** (Q1 2027) - .NET, LINQ patterns
 
 Mixed-language projects are fully supported - the tool automatically detects and analyzes each file type appropriately.
 

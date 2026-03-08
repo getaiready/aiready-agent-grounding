@@ -7,7 +7,13 @@
 
 ## Overview
 
-The **Dependency Health** analyzer evaluates your `package.json` to compute timeline skews against AI knowledge cutoff dates.
+The **Dependency Health** analyzer evaluates your project manifests to compute timeline skews against AI knowledge cutoff dates.
+
+### Language Support
+
+- **Supported Manifests:** `package.json` (JS/TS), `requirements.txt` (Python), `pom.xml` (Java), `go.mod` (Go)
+- **Capabilities:** Deprecated detection, training-cutoff skew, version drift.
+  toxicology
 
 ## 🏛️ Architecture
 
