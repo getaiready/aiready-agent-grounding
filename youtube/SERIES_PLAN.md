@@ -52,14 +52,14 @@ To ensure "ordinary people" can benefit, every episode must follow the **Bridge 
 7. **Day 7: Infinite Observability (ClawCenter)**
    - **Focus**: Seeing inside the "black box." Visualizing reasoning traces and system pulse.
 
-8. **Day 8: Scale-to-Zero: The Economics of Autonomy**
-   - **Focus**: Why serverless is the only logical path for personal agents. Introducing the Lambdaroom concept.
+8. **Day 8: Scaling the Walls: The Limits of Local Hosting**
+   - **Focus**: Addressing the bottlenecks of OpenClaw: hardware maintenance, power outages, and the "one-agent-at-a-time" limit. Why local hosting is great for privacy but hard for scale.
 
-9. **Day 9: The $1/Month AI Agent (The Clawmore Prototype)**
-   - **Focus**: Real-world implementation details for ultra-low cost agents. (Positioned here as Clawmore matures).
+9. **Day 9: Scale-to-Zero: The Serverless Shift (Clawmore)**
+   - **Focus**: Transitioning from a Mac Mini to the Cloud. Introducing the serverless economics that enable a $1/month workforce with infinite scale.
 
-10. **Day 10: Surmounting the Cold Start (The Bridge Pattern)**
-    - **Focus**: Handling WebSockets and persistent sessions in an ephemeral serverless world.
+10. **Day 10: The Neural Spine: Bridging the Resilience Gap**
+    - **Focus**: How we solve the "Cold Start" and re-animate agents across ephemeral sessions using the AIReady Neural Spine.
 
 11. **Day 11: Self-Evolution: The Agent That Writes Itself**
     - **Focus**: Gap detection and autonomous code pushes (The Git-loop).

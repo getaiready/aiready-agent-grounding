@@ -38,8 +38,7 @@ In OpenClaw, we don't treat this as 'chat.' We treat it as a **Probabilistic Log
 ## [4:00 - 6:30] The Metaphor: The Logic Brick (Lego Blocks)
 
 **Visual**:
-<ASSET: youtube/assets/branding/llm*lego_blocks.png>
-*(Note: I will ensure this asset is standardized to s1*d1_llm_logic_gates.png)*
+<ASSET: youtube/assets/branding/s1_d1_llm_logic_gates.png>
 "Imagine a Lego block. On its own, it’s just a piece of plastic. But if you connect it to others, you can build a castle, a car, or a spaceship.
 
 Traditional software is built with **Rigid Bricks**. If `x` is 5, then do `y`. It’s binary. It works perfectly, but it can’t handle the 'messiness' of the real world.
