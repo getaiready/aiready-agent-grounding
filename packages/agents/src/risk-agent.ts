@@ -1,7 +1,8 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 export const RiskAssessmentAgent = new Agent({
+  id: 'risk-assessment-agent',
   name: 'Risk Assessment Agent',
   instructions: `
     You are an expert software architect specialized in analyzing the risk of automated code refactorings.

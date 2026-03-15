@@ -1,4 +1,4 @@
-import { createTool } from '@mastra/core';
+import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
 
 // Note: In a real implementation, this would use Octokit with appropriate auth
@@ -15,14 +15,14 @@ export const githubTools = {
       success: z.boolean(),
       branchUrl: z.string().optional(),
     }),
-    execute: async (context) => {
+    execute: async (input) => {
       console.log(
-        `[GitHubTool] Creating branch ${context.context.branchName} from ${context.context.baseBranch}`
+        `[GitHubTool] Creating branch ${input.branchName} from ${input.baseBranch}`
       );
       // Mock implementation
       return {
         success: true,
-        branchUrl: `https://github.com/placeholder/${context.context.branchName}`,
+        branchUrl: `https://github.com/placeholder/${input.branchName}`,
       };
     },
   }),
@@ -42,8 +42,8 @@ export const githubTools = {
       prNumber: z.number().optional(),
       prUrl: z.string().optional(),
     }),
-    execute: async (context) => {
-      console.log(`[GitHubTool] Creating PR: ${context.context.title}`);
+    execute: async (input) => {
+      console.log(`[GitHubTool] Creating PR: ${input.title}`);
       // Mock implementation
       return {
         success: true,

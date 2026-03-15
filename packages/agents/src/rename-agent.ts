@@ -1,7 +1,8 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 export const RenameAgent = new Agent({
+  id: 'rename-agent',
   name: 'Rename Agent',
   instructions: `
     You are a linguistics and domain-modeling expert specialized in software engineering.

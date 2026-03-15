@@ -77,8 +77,7 @@
     "profile": "default"
   },
   "output": {
-    "format": "json",
-    "file": "aiready-report.json"
+    "format": "json"
   },
   "visualizer": {
     "groupingDirs": ["packages", "src", "lib"],

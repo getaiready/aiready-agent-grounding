@@ -1,7 +1,8 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 export const PrioritizationAgent = new Agent({
+  id: 'prioritization-agent',
   name: 'Prioritization Agent',
   instructions: `
     You are a strategic technical debt manager. Your goal is to rank remediation tasks based on their Return on Investment (ROI).

@@ -513,6 +513,35 @@ publish-mcp-smithery: ## Publish MCP Server to Smithery (requires SMITHERY_API_K
 	echo "[INFO] Smithery will automatically read the smithery.yaml configuration."; \
 	$(call log_success,MCP Server registry submission guidelines provided.)
 
+publish-skill-smithery: ## Publish a specific skill to Smithery (Usage: make publish-skill-smithery SKILL=aiready-best-practices)
+	@if [ -z "$(SKILL)" ]; then \
+		$(call log_error,SKILL parameter required. Usage: make publish-skill-smithery SKILL=name); \
+		exit 1; \
+	fi; \
+	if [ ! -d "packages/skills/$(SKILL)" ]; then \
+		$(call log_error,Skill packages/skills/$(SKILL) not found); \
+		exit 1; \
+	fi; \
+	$(call log_step,Publishing skill '$(SKILL)' to GitHub for Smithery...); \
+	url="https://github.com/$(OWNER)/$(SKILL).git"; \
+	remote="$(SKILL)"; \
+	branch="publish-skill-$(SKILL)"; \
+	git remote add "$$remote" "$$url" 2>/dev/null || git remote set-url "$$remote" "$$url"; \
+	$(call log_info,Remote set: $$remote -> $$url); \
+	git branch -D "$$branch" >/dev/null 2>&1 || true; \
+	$(call log_info,Creating subtree split for packages/skills/$(SKILL)...); \
+	git subtree split --prefix=packages/skills/$(SKILL) -b "$$branch" >/dev/null; \
+	$(call log_info,Subtree split complete: $$branch); \
+	git push -f "$$remote" "$$branch":main; \
+	$(call log_success,Synced skill '$(SKILL)' to GitHub repo (main)); \
+	echo ""; \
+	echo "[INFO] Skill is now available at: $$url"; \
+	echo "[INFO] To list on Smithery.ai:"; \
+	echo "[INFO] 1. Navigate to https://smithery.ai/new"; \
+	echo "[INFO] 2. Select 'Skill' as the submission type"; \
+	echo "[INFO] 3. Provide the GitHub repository URL: $$url"; \
+	$(call log_success,Skill repository prepared for Smithery submission.)
+
 # ============================================================================
 # VS Code Extension Publishing
 # ============================================================================

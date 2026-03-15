@@ -1,7 +1,8 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 export const ImpactAgent = new Agent({
+  id: 'impact-agent',
   name: 'Impact Agent',
   instructions: `
     You are a financial analyst for AI infrastructure.

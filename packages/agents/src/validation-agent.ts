@@ -1,7 +1,8 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 export const ValidationAgent = new Agent({
+  id: 'validation-agent',
   name: 'Validation Agent',
   instructions: `
     You are a Senior QA Automation Engineer and Type System Expert.

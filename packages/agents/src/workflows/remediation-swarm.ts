@@ -1,4 +1,4 @@
-import { Workflow } from '@mastra/core';
+import { Workflow } from '@mastra/core/workflows';
 import { z } from 'zod';
 import { PrioritizationAgent } from '../prioritization-agent';
 import { ImpactAgent } from '../impact-agent';

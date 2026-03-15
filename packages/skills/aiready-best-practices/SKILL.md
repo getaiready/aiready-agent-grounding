@@ -2,6 +2,17 @@
 name: aiready-best-practices
 description: Guidelines for writing AI-friendly code. Detects semantic duplicates, context fragmentation, naming inconsistencies. Use when writing new code, reviewing PRs, refactoring for AI adoption, or debugging AI assistant confusion. Helps minimize context waste and improve AI comprehension.
 license: MIT
+triggers:
+  files:
+    - 'aiready.json'
+    - '.aireadyignore'
+    - '**/package.json'
+  keywords:
+    - 'refactor'
+    - 'technical debt'
+    - 'AI readiness'
+    - 'duplicate code'
+    - 'context window'
 metadata:
   author: aiready
   version: '0.2.2'

@@ -1,7 +1,8 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 export const RefactorAgent = new Agent({
+  id: 'refactor-agent',
   name: 'Refactor Agent',
   instructions: `
     You are an expert full-stack engineer specialized in code consolidation and refactoring.

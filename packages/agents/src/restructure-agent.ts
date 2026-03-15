@@ -1,7 +1,8 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { z } from 'zod';
 
 export const RestructureAgent = new Agent({
+  id: 'restructure-agent',
   name: 'Restructure Agent',
   instructions: `
     You are an expert Software Architect specialized in AI-Ready codebases.
