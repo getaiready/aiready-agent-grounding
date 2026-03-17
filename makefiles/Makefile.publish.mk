@@ -378,7 +378,7 @@ sync: ## Push monorepo to origin and sync all spokes to their public repos. Use 
 		fi; \
 	fi && \
 	$(call log_step,Syncing relevant repositories in parallel...) && \
-	SKIP_PRE_PUSH=true $(MAKE) $(MAKE_PARALLEL) $(addprefix github-sync-spoke-,$(PUBLIC_GITHUB_SPOKES)) github-sync-landing github-sync-clawmore github-sync-vscode github-sync-action CHANGED_FILES="$$CHANGED" FORCE="$(FORCE)" && \
+	SKIP_PRE_PUSH=true $(MAKE) $(MAKE_PARALLEL) $(addprefix github-sync-spoke-,$(PUBLIC_GITHUB_SPOKES)) github-sync-landing github-sync-platform github-sync-clawmore github-sync-vscode github-sync-action CHANGED_FILES="$$CHANGED" FORCE="$(FORCE)" && \
 	$(call log_success,Sync process completed)
 
 .PHONY: github-sync-spoke-%
@@ -403,6 +403,17 @@ github-sync-landing:
 	if [ "$$should_sync" = "true" ]; then \
 		$(call log_step,Syncing landing page repository...); \
 		$(MAKE) publish-landing OWNER=$(OWNER) 2>&1 | grep -E '(SUCCESS|ERROR|Synced|tag pushed)'; \
+	fi
+
+.PHONY: github-sync-platform
+github-sync-platform:
+	@should_sync=false; \
+	if [ "$(FORCE)" = "true" ] || [ "$(CHANGED_FILES)" = "FORCE_ALL" ] || echo "$(CHANGED_FILES)" | grep -q "platform/"; then \
+		should_sync=true; \
+	fi; \
+	if [ "$$should_sync" = "true" ]; then \
+		$(call log_step,Syncing platform repository...); \
+		$(MAKE) publish-platform OWNER=$(OWNER) 2>&1 | grep -E '(SUCCESS|ERROR|Synced|tag pushed)'; \
 	fi
 
 .PHONY: github-sync-clawmore
