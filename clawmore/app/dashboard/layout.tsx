@@ -10,7 +10,6 @@ import {
   Settings,
   Terminal,
   Zap,
-  Shield,
   ArrowLeft,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -20,7 +19,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
+  const _pathname = usePathname();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'overview';
 

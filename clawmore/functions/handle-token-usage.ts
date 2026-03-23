@@ -1,9 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import {
-  DynamoDBDocumentClient,
-  UpdateCommand,
-  GetCommand,
-} from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import {
   EventBridgeClient,
   PutEventsCommand,
@@ -20,7 +16,7 @@ const RECHARGE_THRESHOLD_CENTS = 500; // $5.00
 const RECHARGE_AMOUNT_CENTS = 1000; // $10.00
 
 export const handler = async (event: any) => {
-  const { userId, tokensUsed, model } = event.detail;
+  const { userId, tokensUsed, model: _model } = event.detail;
 
   // 1. Calculate Cost (Simplistic mapping for demo)
   // GPT-4o style pricing: ~$10 per 1M tokens = 0.001 cents per token

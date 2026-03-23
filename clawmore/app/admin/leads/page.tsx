@@ -5,8 +5,8 @@ import {
 } from '@aws-sdk/client-s3';
 import { auth } from '../../../auth';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
-import { Mail, User, Clock, Tag, MessageSquare, ArrowLeft } from 'lucide-react';
+
+import { Mail, User, Clock, MessageSquare } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 

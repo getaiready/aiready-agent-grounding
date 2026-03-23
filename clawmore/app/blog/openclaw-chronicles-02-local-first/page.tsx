@@ -1,12 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import {
   Clock,
   Hash,
   ChevronRight,
-  ShieldCheck,
   Zap,
   HardDrive,
   FileText,

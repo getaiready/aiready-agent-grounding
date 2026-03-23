@@ -65,6 +65,8 @@ const QUARANTINE_SCP_DOCUMENT = {
   ],
 };
 
+void QUARANTINE_SCP_DOCUMENT;
+
 /**
  * Ensures the Serverless-only SCP exists.
  * Returns the Policy ID.

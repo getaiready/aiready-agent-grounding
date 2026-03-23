@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import {
   Clock,
@@ -8,9 +7,7 @@ import {
   ChevronRight,
   Database,
   Cloud,
-  Zap,
   ShieldCheck,
-  RotateCcw,
 } from 'lucide-react';
 import Navbar from '../../../components/Navbar';
 import Breadcrumbs from '../../../components/Breadcrumbs';

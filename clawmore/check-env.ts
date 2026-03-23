@@ -1,4 +1,4 @@
-import { auth } from './auth';
+import './auth';
 
 console.log('AUTH_SECRET exists:', !!process.env.AUTH_SECRET);
 console.log('NEXTAUTH_SECRET exists:', !!process.env.NEXTAUTH_SECRET);

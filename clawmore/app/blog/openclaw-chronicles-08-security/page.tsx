@@ -1,17 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import {
   Clock,
   Hash,
   ChevronRight,
-  ShieldCheck,
-  Zap,
-  Lock,
-  Server,
   ShieldAlert,
   Network,
+  Zap,
 } from 'lucide-react';
 import Navbar from '../../../components/Navbar';
 import Breadcrumbs from '../../../components/Breadcrumbs';

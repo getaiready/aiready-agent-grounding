@@ -17,7 +17,7 @@ const docClient = DynamoDBDocumentClient.from(ddbClient);
 
 const COMPUTE_INCLUSION_CENTS = 1500; // $15.00
 
-export const handler = async (event: any) => {
+export const handler = async (_event: any) => {
   console.log('Starting Managed Account Cost Sync...');
 
   const today = new Date();

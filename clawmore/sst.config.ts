@@ -1,6 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+
 /// <reference path="./.sst/platform/config.d.ts" />
 
 // Suppress AWS SDK warning when both profile and static keys are set
@@ -130,7 +129,7 @@ export default $config({
     });
 
     // Managed Platform Functions
-    const createAccount = new sst.aws.Function('CreateManagedAccount', {
+    const _createAccount = new sst.aws.Function('CreateManagedAccount', {
       handler: 'functions/create-managed-account.handler',
       timeout: '15 minutes',
       link: [table],

@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
             session.customer_email || session.metadata?.userEmail;
           if (userEmail) {
             // Find the user by email in DynamoDB
-            const { Items } = await docClient.query({
+            const { Items: _Items } = await docClient.query({
               TableName,
               IndexName: 'GSI1', // Assuming an email index exists, or we scan/fallback to PK if email is the PK
               KeyConditionExpression: 'GSI1PK = :email',

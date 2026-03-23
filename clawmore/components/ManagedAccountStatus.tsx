@@ -16,7 +16,7 @@ export const ManagedAccountStatus: React.FC<ManagedAccountStatusProps> = ({
   awsSpendCents,
   awsInclusionCents,
   aiTokenBalanceCents,
-  aiRefillThresholdCents,
+  aiRefillThresholdCents: _aiRefillThresholdCents,
   mutationCount,
 }) => {
   const awsProgress = Math.min((awsSpendCents / awsInclusionCents) * 100, 100);

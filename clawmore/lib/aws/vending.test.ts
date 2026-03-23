@@ -101,7 +101,7 @@ describe('vending AWS helpers', () => {
   beforeEach(() => {
     vi.resetModules();
     // reset mockSend to a safe default before each test
-    mockSend = vi.fn(async (command: any) => {
+    mockSend = vi.fn(async (_command: any) => {
       // Default: return empty success-like shapes
       return {};
     });

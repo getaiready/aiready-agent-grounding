@@ -8,13 +8,8 @@ import {
   RefreshCcw,
   ShieldCheck,
   Cpu,
-  GitBranch,
-  Globe,
-  MessageSquare,
   ArrowRight,
-  Code,
   Terminal,
-  Layers,
   Activity,
 } from 'lucide-react';
 import Modal from '../components/Modal';

@@ -22,7 +22,7 @@ async function main() {
     // 1. Attempt to sync Hub updates into the client repo
     await orchestrator.syncHubToSpoke(options);
     console.log('✅ Sync completed successfully.');
-  } catch (error: any) {
+  } catch (_error: any) {
     console.log('⚠️ Sync failed or encountered conflicts.');
 
     // 2. Attempt agentic conflict resolution

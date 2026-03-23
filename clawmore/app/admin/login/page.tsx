@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
       } else {
         router.push('/admin/leads');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Something went wrong');
     } finally {
       setLoading(false);

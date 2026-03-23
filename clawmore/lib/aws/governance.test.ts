@@ -36,8 +36,7 @@ vi.mock('@aws-sdk/client-organizations', () => {
 describe('governance utilities', () => {
   beforeEach(() => {
     vi.resetModules();
-    mockSend = vi.fn(async (command: any) => {
-      // default empty
+    mockSend = vi.fn(async (_command: any) => {
       return {};
     });
   });

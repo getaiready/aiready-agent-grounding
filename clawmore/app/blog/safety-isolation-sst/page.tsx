@@ -2,13 +2,9 @@
 
 import { useState } from 'react';
 import {
-  ArrowLeft,
   Clock,
   Hash,
-  Activity,
-  Zap,
   ChevronRight,
-  Shield,
   Lock,
   Network,
   Globe,
@@ -23,7 +19,7 @@ import Link from 'next/link';
 
 export default function BlogPost() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
+  const _openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const apiUrl = process.env.NEXT_PUBLIC_LEAD_API_URL || '';
 
@@ -108,7 +104,7 @@ export default function BlogPost() {
               <section className="mt-12">
                 <h2 className="text-3xl font-black tracking-tight mb-6 flex items-center gap-4 italic uppercase">
                   <span className="text-cyber-purple font-mono text-sm not-italic">
-                    /// 01
+                    {'/// 01'}
                   </span>
                   The Problem of Agentic Overreach
                 </h2>
@@ -133,7 +129,7 @@ export default function BlogPost() {
               <section className="mt-16">
                 <h2 className="text-3xl font-black tracking-tight mb-6 flex items-center gap-4 italic uppercase">
                   <span className="text-cyber-purple font-mono text-sm not-italic">
-                    /// 02
+                    {'/// 02'}
                   </span>
                   Account Vending: The Ultimate Sandbox
                 </h2>
@@ -165,7 +161,7 @@ export default function BlogPost() {
               <section className="mt-16">
                 <h2 className="text-3xl font-black tracking-tight mb-6 flex items-center gap-4 italic uppercase">
                   <span className="text-cyber-purple font-mono text-sm not-italic">
-                    /// 03
+                    {'/// 03'}
                   </span>
                   SST Ion: Code-Aware Security
                 </h2>

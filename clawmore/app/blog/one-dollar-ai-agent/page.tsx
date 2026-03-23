@@ -1,20 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ArrowLeft,
-  Clock,
-  Hash,
-  Terminal,
-  Activity,
-  Zap,
-  ChevronRight,
-  DollarSign,
-  TrendingDown,
-  Cpu,
-} from 'lucide-react';
+import { Clock, Hash, ChevronRight, DollarSign, Cpu } from 'lucide-react';
 import Modal from '../../../components/Modal';
 import LeadForm from '../../../components/LeadForm';
 import SystemFlow from '../../../components/SystemFlow';
@@ -77,7 +65,7 @@ const COST_EDGES = [
 
 export default function BlogPost() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
+  const _openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const apiUrl = process.env.NEXT_PUBLIC_LEAD_API_URL || '';
 

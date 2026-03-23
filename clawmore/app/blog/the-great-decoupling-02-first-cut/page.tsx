@@ -1,15 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Clock,
-  Hash,
-  ChevronRight,
-  Scissors,
-  Layers,
-  Zap,
-  ArrowRight,
-} from 'lucide-react';
+import { Clock, Hash, ChevronRight, Zap } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '../../../components/Navbar';
 import Breadcrumbs from '../../../components/Breadcrumbs';

@@ -1,25 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import {
-  ArrowLeft,
-  Clock,
-  Hash,
-  Terminal,
-  Activity,
-  RefreshCcw,
-  ShieldCheck,
-  Cpu,
-  Zap,
-  ChevronRight,
-  GitBranch,
-  Layers,
-} from 'lucide-react';
+import { Clock, Hash, ShieldCheck, ChevronRight } from 'lucide-react';
 import Navbar from '../../../components/Navbar';
-import BlogHero from '../../../components/BlogHero';
-import BlogCard from '../../../components/BlogCard';
 import Modal from '../../../components/Modal';
 import LeadForm from '../../../components/LeadForm';
 import SystemFlow from '../../../components/SystemFlow';

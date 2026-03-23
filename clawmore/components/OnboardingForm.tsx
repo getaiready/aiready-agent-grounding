@@ -1,15 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import {
-  Shield,
-  Zap,
-  RefreshCcw,
-  Loader2,
-  ArrowRight,
-  CheckCircle,
-} from 'lucide-react';
+import { Loader2, ArrowRight, CheckCircle } from 'lucide-react';
 
 interface OnboardingFormProps {
   userEmail: string;

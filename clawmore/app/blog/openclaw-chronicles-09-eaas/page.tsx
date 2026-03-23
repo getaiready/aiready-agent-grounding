@@ -1,18 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import {
-  Clock,
-  Hash,
-  ChevronRight,
-  ShieldCheck,
-  Zap,
-  LayoutGrid,
-  Cloud,
-  Network,
-  Cpu,
-} from 'lucide-react';
+import { Clock, Hash, ChevronRight, LayoutGrid, Cpu, Zap } from 'lucide-react';
 import Navbar from '../../../components/Navbar';
 import Breadcrumbs from '../../../components/Breadcrumbs';
 import JsonLd from '../../../components/JsonLd';

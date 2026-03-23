@@ -1,16 +1,6 @@
 'use client';
 
-import {
-  Clock,
-  Hash,
-  ChevronRight,
-  Shield,
-  Zap,
-  Cpu,
-  Unplug,
-  Box,
-  TrendingUp,
-} from 'lucide-react';
+import { Clock, Hash, ChevronRight, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '../../../components/Navbar';
 import Breadcrumbs from '../../../components/Breadcrumbs';

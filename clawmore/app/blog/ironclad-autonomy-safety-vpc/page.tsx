@@ -1,21 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
-  ArrowLeft,
   Clock,
   Hash,
-  Terminal,
-  Activity,
-  RefreshCcw,
   ShieldCheck,
-  Cpu,
   Zap,
   ChevronRight,
   Lock,
-  ShieldAlert,
 } from 'lucide-react';
 import Modal from '../../../components/Modal';
 import LeadForm from '../../../components/LeadForm';

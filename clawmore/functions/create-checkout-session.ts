@@ -5,8 +5,13 @@ import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const handler = async (event: any) => {
-  const { userId, userEmail, coEvolutionOptIn, successUrl, cancelUrl } =
-    JSON.parse(event.body || '{}');
+  const {
+    userId: _userId,
+    userEmail,
+    coEvolutionOptIn,
+    successUrl,
+    cancelUrl,
+  } = JSON.parse(event.body || '{}');
 
   if (!userEmail) {
     return {

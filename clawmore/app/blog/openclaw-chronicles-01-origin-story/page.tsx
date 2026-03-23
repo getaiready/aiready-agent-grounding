@@ -1,16 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import {
-  Clock,
-  Hash,
-  ChevronRight,
-  TrendingUp,
-  Users,
-  Star,
-  Zap,
-} from 'lucide-react';
+import { Clock, Hash, ChevronRight, TrendingUp, Users } from 'lucide-react';
 import Navbar from '../../../components/Navbar';
 import Breadcrumbs from '../../../components/Breadcrumbs';
 import JsonLd from '../../../components/JsonLd';
@@ -64,8 +55,6 @@ const GROWTH_EDGES = [
 ];
 
 export default function BlogPost() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const BLOG_JSON_LD = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',

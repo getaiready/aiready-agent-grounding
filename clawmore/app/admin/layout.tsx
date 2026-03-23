@@ -5,12 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  Users,
-  UserPlus,
   ArrowLeft,
-  LogOut,
   ShieldCheck,
-  Zap,
   Activity,
 } from 'lucide-react';
 import { motion } from 'framer-motion';

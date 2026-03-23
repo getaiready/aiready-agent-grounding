@@ -1,5 +1,4 @@
 import { execSync } from 'child_process';
-import * as fs from 'fs';
 import * as path from 'path';
 
 export interface SyncOptions {
@@ -26,7 +25,7 @@ export class SyncOrchestrator {
       workingDir,
       hubUrl,
       hubBranch,
-      spokeBranch,
+      spokeBranch: _spokeBranch,
       prefix,
       squash = true,
     } = options;
@@ -81,7 +80,7 @@ export class SyncOrchestrator {
   private ensureRemote(cwd: string, name: string, url: string): void {
     try {
       this.runCommand(cwd, `git remote add ${name} ${url}`);
-    } catch (e) {
+    } catch (_e) {
       this.runCommand(cwd, `git remote set-url ${name} ${url}`);
     }
   }

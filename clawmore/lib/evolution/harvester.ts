@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest';
-import { ZodSchema, z } from 'zod';
+import { z } from 'zod';
 
 export const InnovationPatternSchema = z.object({
   title: z.string().describe('Short, descriptive title of the optimization'),

@@ -2,14 +2,7 @@
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
-import {
-  Layers,
-  Zap,
-  Activity,
-  Shield,
-  Terminal,
-  User as UserIcon,
-} from 'lucide-react';
+import { Layers, Zap, Activity, Shield, Terminal } from 'lucide-react';
 
 interface DashboardClientProps {
   user: any;
@@ -25,7 +18,7 @@ interface DashboardClientProps {
 
 export default function DashboardClient({
   user,
-  isAdmin,
+  isAdmin: _isAdmin,
   status,
 }: DashboardClientProps) {
   const searchParams = useSearchParams();

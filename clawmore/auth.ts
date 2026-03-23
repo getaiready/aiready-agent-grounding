@@ -181,6 +181,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session;
     },
     async signIn({ user, account, profile }) {
+      // _account and _profile are received but not used in this callback
+      void account;
+      void profile;
       const adminEmails = process.env.ADMIN_EMAILS
         ? process.env.ADMIN_EMAILS.split(',').map((e) => e.trim())
         : ['caopengau@gmail.com', 'admin@example.com'];

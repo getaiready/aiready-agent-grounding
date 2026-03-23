@@ -8,9 +8,9 @@ import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [_password, _setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const router = useRouter();
@@ -33,21 +33,21 @@ export default function LoginPage() {
       } else {
         setEmailSent(true);
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Something went wrong');
     } finally {
       setEmailLoading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const _handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
       const res = await signIn('credentials', {
-        password,
+        password: _password,
         redirect: false,
       });
 
@@ -56,7 +56,7 @@ export default function LoginPage() {
       } else {
         router.push('/admin/leads');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('Something went wrong');
     } finally {
       setLoading(false);
@@ -204,7 +204,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-12 text-center">
-          <Link 
+          <Link
             href="/admin/login"
             className="text-[10px] font-mono text-zinc-800 hover:text-zinc-600 transition-colors uppercase tracking-[0.2em]"
           >

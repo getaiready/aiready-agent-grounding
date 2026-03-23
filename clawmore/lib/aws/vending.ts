@@ -116,7 +116,7 @@ export async function findAvailableAccountInPool(): Promise<string | null> {
       if (statusTag?.Value === 'Available') {
         return account.Id!;
       }
-    } catch (e) {
+    } catch (_e) {
       // Skip accounts where we can't read tags (e.g. Master account)
       continue;
     }

@@ -32,7 +32,7 @@ describe('ConflictResolver', () => {
       })
     );
 
-    mockExecSync = vi.fn((command: string, opts: any) => {
+    mockExecSync = vi.fn((command: string, _opts: any) => {
       if (command.startsWith('git status')) {
         // simulate a UU unmerged file
         return 'UU docs/readme.md\n';

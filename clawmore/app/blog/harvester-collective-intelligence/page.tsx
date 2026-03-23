@@ -4,10 +4,7 @@ import { useState } from 'react';
 import {
   Clock,
   Hash,
-  Activity,
   Zap,
-  ChevronRight,
-  Globe,
   Share2,
   TrendingUp,
   Fingerprint,
@@ -22,7 +19,7 @@ import Link from 'next/link';
 
 export default function BlogPost() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
+  const _openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const apiUrl = process.env.NEXT_PUBLIC_LEAD_API_URL || '';
 

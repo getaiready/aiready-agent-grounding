@@ -1,18 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import {
-  User,
-  Mail,
-  ShieldCheck,
-  ShieldAlert,
-  ArrowLeft,
-  RefreshCcw,
-  Check,
-  X,
-  Search,
-} from 'lucide-react';
+import { User, Mail, RefreshCcw, Check, X, Search } from 'lucide-react';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = React.useState<any[]>([]);
