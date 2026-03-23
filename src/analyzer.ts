@@ -15,7 +15,7 @@ import {
   VAGUE_FILE_NAMES,
   Severity,
   IssueType,
-  emitProgress,
+  runBatchAnalysis,
   getParser,
 } from '@aiready/core';
 import { readFileSync, existsSync, statSync } from 'fs';
@@ -187,23 +187,19 @@ export async function analyzeAgentGrounding(
   let untypedExports = 0;
   let totalExports = 0;
 
-  let processed = 0;
-  for (const f of files) {
-    processed++;
-    emitProgress(
-      processed,
-      files.length,
-      'agent-grounding',
-      'analyzing files',
-      options.onProgress
-    );
-
-    const analysis = await analyzeFile(f);
-    if (analysis.isBarrel) barrelExports++;
-    untypedExports += analysis.untypedExports;
-    totalExports += analysis.totalExports;
-    allDomainTerms.push(...analysis.domainTerms);
-  }
+  await runBatchAnalysis(
+    files,
+    'analyzing files',
+    'agent-grounding',
+    options.onProgress,
+    (f: string) => analyzeFile(f),
+    (analysis: FileAnalysis) => {
+      if (analysis.isBarrel) barrelExports++;
+      untypedExports += analysis.untypedExports;
+      totalExports += analysis.totalExports;
+      allDomainTerms.push(...analysis.domainTerms);
+    }
+  );
 
   // Domain vocabulary consistency
   const {
