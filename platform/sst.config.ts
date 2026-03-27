@@ -111,6 +111,27 @@ export default $config({
     const isLocal = $app.stage === 'local';
     const sesDomain = isProd ? 'getaiready.dev' : 'dev.getaiready.dev';
 
+    // Determine domain for webhook URL
+    const webhookDomain = isProd
+      ? 'platform.getaiready.dev'
+      : $app.stage === 'dev'
+        ? 'dev.platform.getaiready.dev'
+        : `${$app.stage}.platform.getaiready.dev`;
+
+    // Stripe Webhook Endpoint
+    const webhookEndpoint = new (stripe as any).WebhookEndpoint(
+      'StripeWebhook',
+      {
+        url: `https://${webhookDomain}/api/billing/webhook`,
+        enabledEvents: [
+          'checkout.session.completed',
+          'customer.subscription.updated',
+          'customer.subscription.deleted',
+        ],
+      },
+      { provider: stripeProvider }
+    );
+
     // SNS Topic for System Alerts
     const alertsTopic = new sst.aws.SnsTopic('SystemAlerts', {
       subscriptions: {
@@ -211,7 +232,7 @@ export default $config({
           process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || '',
         AUTH_TRUST_HOST: 'true',
         STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
-        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || '',
+        STRIPE_WEBHOOK_SECRET: webhookEndpoint.secret,
         SES_DOMAIN: sesDomain,
         SES_FROM_EMAIL: `noreply@${sesDomain}`,
         SES_TO_EMAIL: process.env.SES_TO_EMAIL || 'team@getaiready.dev',
@@ -377,6 +398,7 @@ export default $config({
 
     return {
       site: site.url,
+      stripeWebhookUrl: webhookEndpoint.url,
       bucketName: bucket.name,
       tableName: table.name,
       scanQueueUrl: scanQueue.url,

@@ -122,5 +122,5 @@ test-clawmore-e2e-local: ## Run ClawMore E2E tests locally (uses next dev, not s
 
 test-clawmore-e2e-prod: ## Run ClawMore E2E tests against live production site
 	@$(call log_step,Running ClawMore E2E tests against production...)
-	@cd clawmore && BASE_URL=https://clawmore.getaiready.dev pnpm exec playwright test e2e/seo.spec.ts --config playwright.config.prod.ts
+	@cd clawmore && BASE_URL=https://clawmore.ai pnpm exec playwright test e2e/seo.spec.ts --config playwright.config.prod.ts
 	@$(call log_success,ClawMore production tests passed)
