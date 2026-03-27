@@ -3,7 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Explains why AI tools struggle with your codebase and where small changes unlock outsized AI leverage",
+  "description": "The infrastructure for Agentic Readiness. Optimized tools for AI agents like Cursor, Windsurf, and Claude to navigate and improve codebases.",
+  "keywords": [
+    "AI",
+    "Agentic Readiness",
+    "Model Context Protocol",
+    "MCP",
+    "Cursor",
+    "Windsurf",
+    "Claude",
+    "Copilot",
+    "code analysis",
+    "semantic duplicates",
+    "context window",
+    "token optimization"
+  ],
   "workspaces": [
     "packages/*"
   ],

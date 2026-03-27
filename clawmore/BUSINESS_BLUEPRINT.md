@@ -80,3 +80,28 @@ All client Spoke repositories are hosted as **Private Repos** within the `clawmo
 
 **Status:** `READY_FOR_PROFIT`  
 **Managed By:** ClawMore Agentic Swarm
+
+---
+
+## 🔗 5. Ecosystem Integration
+
+ClawMore is part of the broader AIReady ecosystem. See the [Organic Growth Strategy](../.github/platform/ORGANIC-GROWTH-STRATEGY.md) for how all components work together:
+
+### **The Upgrade Path**
+
+```
+AIReady CLI (Free) → Platform ($49-299/mo) → ClawMore ($29-299/mo)
+```
+
+### **Shared Infrastructure**
+
+- **Core Analysis:** Uses `@aiready/core` for code scanning
+- **UI Components:** Uses `@aiready/components` for consistent UX
+- **AI Agents:** Uses `@aiready/agents` for remediation
+
+### **Cross-Product Synergies**
+
+- Platform users discover ClawMore through "auto-fix" recommendations
+- ClawMore's evolution data improves Platform's detection algorithms
+- Community contributions benefit both products
+- Shared marketing content and case studies

@@ -1,8 +1,8 @@
 # AIReady
 
-> Free CLI tools to optimize codebases for AI collaboration
+> Free CLI tools to optimize codebases for AI collaboration & Agentic Readiness
 
-AIReady analyzes your codebase to identify issues that make it harder for AI models (ChatGPT, Claude, Copilot) to understand and work with your code effectively.
+AIReady analyzes your codebase to identify issues that make it harder for AI models (ChatGPT, Claude, Copilot, Cursor, Windsurf) to understand and work with your code effectively. It optimizes context window usage, reduces hallucinations, and improves agentic navigation.
 
 ## Links
 
@@ -10,14 +10,16 @@ AIReady analyzes your codebase to identify issues that make it harder for AI mod
 - Documentation: https://getaiready.dev/docs
 - Blog: https://getaiready.dev/blog
 - Full details: https://getaiready.dev/llms-full.txt
+- Badge: `[![AI-Ready](https://img.shields.io/badge/AI--Ready-optimized-brightgreen)](https://getaiready.dev)`
 
-## Core Tools
+## Core Tools (Agentic Optimization)
 
-- @aiready/pattern-detect: Identifies semantic duplicates that waste AI context tokens
-- @aiready/context-analyzer: Calculates context window usage and dependency analysis
-- @aiready/consistency: Detects naming and pattern inconsistencies that confuse AI models
+- @aiready/pattern-detect: Identifies semantic duplicates that waste AI context tokens and cause "context drowning".
+- @aiready/context-analyzer: Calculates context window usage, dependency fragmentation, and cognitive load for LLMs.
+- @aiready/consistency: Detects naming and pattern inconsistencies that confuse AI models and lead to hallucinated APIs.
+- @aiready/mcp-server: Model Context Protocol server for native integration with Claude Desktop, Cursor, and Windsurf.
 
-## Quick Start
+## Quick Start for Agents
 
 ```bash
 # Run all tools at once

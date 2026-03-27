@@ -53,3 +53,11 @@ This document outlines the next phase of evolution for the AIReady SaaS platform
 *   **Conversion:** 5% of active CLI users adopt CI/CD Gatekeeper.
 *   **Retention:** 80% of users who merge an "AI-Generated PR" remain active.
 *   **Stability:** 99.9% successful analysis completion rate.
+
+---
+
+## Related Documents
+- [Organic Growth Strategy](./ORGANIC-GROWTH-STRATEGY.md) — Full ecosystem growth plan
+- [Pricing Tiers](./pricing.md) — Detailed pricing structure
+- [Revenue Model](./revenue.md) — Revenue projections and funnel
+- [Architecture](./architecture.md) — Technical architecture

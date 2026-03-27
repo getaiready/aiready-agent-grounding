@@ -1,22 +1,22 @@
-# AIReady - Complete Documentation for AI Models
+# AIReady - Complete Documentation for AI Models & Agents
 
-> Comprehensive guide to AI-ready codebase optimization tools
+> Comprehensive guide to AI-ready codebase optimization and Agentic Readiness
 
 ## Overview
 
-AIReady is a free, open-source suite of command-line tools designed to analyze and optimize codebases for better AI collaboration. It identifies issues that make code harder for AI models (ChatGPT, Claude, GitHub Copilot, etc.) to understand and work with effectively.
+AIReady is a free, open-source suite of command-line tools and Model Context Protocol (MCP) services designed to analyze and optimize codebases for better AI collaboration and autonomous agent navigation. It identifies issues that cause "Agentic Wall" failures, context window drowning, and hallucination-risk patterns.
 
 **Website**: https://getaiready.dev
-**GitHub**: https://github.com/caopengau/aiready-cli
-**npm**: https://www.npmjs.com/package/@aiready/cli
+**GitHub**: https://github.com/caopengau/aiready
+**MCP Registry**: https://smithery.ai/mcp/@aiready/mcp-server
 
-## Core Philosophy
+## Core Philosophy: Agentic Readiness
 
-Modern AI tools struggle with codebases that have:
-- Semantic duplicates (variations that do the same thing)
-- High context fragmentation (scattered related code)
-- Inconsistent naming and patterns
-- Deep dependency chains that exceed context windows
+Modern AI agents and coding assistants struggle with codebases that have:
+- **Semantic Duplicates**: Redundant logic that fragments AI understanding.
+- **Context Fragmentation**: Scattered related code that exceeds typical 128k-200k context windows.
+- **Architectural Drift**: Inconsistent patterns that break agentic reasoning.
+- **Domain Blindness**: Poor grounding that makes agents "lost" in the codebase.
 
 AIReady detects these issues automatically and provides actionable recommendations.
 

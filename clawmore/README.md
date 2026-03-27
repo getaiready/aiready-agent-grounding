@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ClawMore (Layer 3: Monetization)
 
-## Getting Started
+> Managed Evolution & EaaS (Evolution-as-a-Service)
 
-First, run the development server:
+ClawMore is the premium layer of the **AIReady Empire**, providing autonomous codebase evolution and managed infrastructure.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 The AIReady Empire
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1.  **LAYER 1: OPEN SOURCE**: [AIReady CLI](https://github.com/caopengau/aiready), [MCP Server](https://github.com/caopengau/aiready/tree/main/packages/mcp-server), and 10 Analysis Tools.
+2.  **LAYER 2: ACTIVATION**: [Platform Dashboard](https://getaiready.dev/dashboard) for trend tracking and remediation.
+3.  **LAYER 3: MONETIZATION**: **ClawMore** - Autonomous evolution for managed AWS infrastructure.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Autonomous Infrastructure**: Managed AWS account vending and serverless management.
+- **Codebase Evolution**: Automatic application of AI-readiness fixes and architectural improvements.
+- **Innovation Harvesting**: Automatically detect and promote successful patterns across your organization.
+- **Managed Evolution**: Move beyond static code to a living, evolving repository.
 
-## Learn More
+## Get Started
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Visit [getaiready.dev/clawmore](https://getaiready.dev/clawmore) to learn more about our EaaS offerings.

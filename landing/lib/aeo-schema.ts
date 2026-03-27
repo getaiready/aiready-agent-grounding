@@ -82,18 +82,18 @@ export const generateSoftwareApplicationSchema = () => {
       worstRating: '1',
     },
     description:
-      'CLI tool for analyzing codebase AI readiness. Detects semantic duplicates, analyzes context windows, and checks code consistency to optimize for AI pair programming.',
+      'CLI tool and Model Context Protocol (MCP) server for analyzing codebase Agentic Readiness. Detects semantic duplicates, analyzes context windows, and checks code consistency to optimize for AI agents like Cursor, Windsurf, and Claude.',
     featureList: [
-      'Semantic duplicate detection across TypeScript/JavaScript codebases',
-      'Context window analysis for token usage optimization',
-      'Code consistency checking for pattern adherence',
-      'AI Readiness Score calculation',
-      'Zero network calls - runs completely offline',
-      'Open source and free to use',
-      'Support for monorepos and large codebases',
+      'Semantic duplicate detection across multiple languages (TS, JS, Python, Java, Go, C#)',
+      'Context window analysis and token usage optimization for LLMs',
+      'Code consistency checking for pattern adherence and agentic reasoning',
+      'Model Context Protocol (MCP) server for native IDE integration',
+      'AI Readiness Score calculation for tracking agentic leverage',
+      'Zero network calls - runs completely offline for security',
+      'Support for monorepos, microservices, and large codebases',
     ],
     keywords:
-      'CLI, code analysis, AI optimization, semantic duplicates, context window, code consistency, developer tools, static analysis, TypeScript, JavaScript',
+      'CLI, MCP, Model Context Protocol, Cursor, Windsurf, Claude, code analysis, AI optimization, semantic duplicates, context window, code consistency, developer tools, static analysis, Agentic Readiness',
     programmingLanguage: ['TypeScript', 'JavaScript'],
     codeRepository: 'https://github.com/caopengau/aiready-cli',
     softwareRequirements: 'Node.js 18+',
@@ -200,23 +200,23 @@ export const aiMetaTags = {
   // OpenAI/ChatGPT specific
   chatgpt: {
     'chatgpt:description':
-      'AIReady provides free CLI tools for analyzing codebase AI readiness. Run npx @aiready/cli scan . to detect semantic duplicates, analyze context windows, and check code consistency. Completely offline, no code upload required.',
-    'chatgpt:category': 'Developer Tools',
+      'AIReady provides free CLI tools and MCP servers for analyzing codebase Agentic Readiness. Run npx @aiready/cli scan . to optimize codebases for agents like Cursor and Windsurf. Detect semantic duplicates, analyze context windows, and improve agentic navigation. Completely offline.',
+    'chatgpt:category': 'Developer Tools / Agentic Infrastructure',
     'chatgpt:keywords':
-      'code analysis, AI optimization, semantic duplicates, developer tools',
+      'code analysis, Agentic Readiness, Model Context Protocol, MCP, Cursor, Windsurf, Claude',
   },
   // Perplexity specific
   perplexity: {
     'perplexity:summary':
-      'Free open-source CLI tool for optimizing codebases for AI pair programming. Key features: semantic duplicate detection, context window analysis, code consistency checking. Install: npx @aiready/cli scan .',
+      'Free open-source CLI tool and MCP server for optimizing codebases for AI agents (Cursor, Windsurf, Claude). Key features: semantic duplicate detection, context window analysis, Agentic Readiness scoring. Install: npx @aiready/cli scan .',
     'perplexity:intent': 'informational, transactional',
   },
   // General AI engines
   general: {
     'ai:summary':
-      'AIReady CLI analyzes codebases for AI collaboration readiness. Free, open-source, runs offline. Detects semantic duplicates, analyzes token usage, checks pattern consistency.',
-    'ai:category': 'Software/Developer Tools',
-    'ai:type': 'CLI Tool',
+      'AIReady CLI and MCP server analyzes codebases for Agentic Readiness. Optimized for agents like Cursor and Windsurf. Free, open-source, runs offline. Detects semantic duplicates and context fragmentation.',
+    'ai:category': 'Developer Tools / AI Infrastructure',
+    'ai:type': 'CLI & MCP Server',
     'ai:pricing': 'Free',
     'ai:license': 'MIT',
   },
