@@ -11,7 +11,9 @@
 ###############################################################################
 
 MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-ROOT_DIR     := $(abspath $(MAKEFILE_DIR)/..)
+ROOT_DIR     := $(abspath $(MAKEFILE_DIR)/../..)
+$(info DEBUG: MAKEFILE_DIR is $(MAKEFILE_DIR))
+$(info DEBUG: ROOT_DIR is $(ROOT_DIR))
 include $(MAKEFILE_DIR)/Makefile.shared.mk
 include $(MAKEFILE_DIR)/Makefile.publish.mk
 
