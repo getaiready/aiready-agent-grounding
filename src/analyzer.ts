@@ -145,10 +145,19 @@ export async function analyzeAgentGrounding(
     include: ['**/*'],
   });
 
-  const dirs = rawDirs.map((d: string) => ({
-    path: d,
-    depth: relative(rootDir, d).split(/[/\\]/).filter(Boolean).length,
-  }));
+  const dirs = rawDirs.map((d: string) => {
+    const relPath = relative(rootDir, d);
+    const parts = relPath.split(/[/\\]/).filter(Boolean);
+
+    // Monorepo awareness: If path starts with packages/ or apps/, ignore the first two levels
+    // (e.g. packages/core/src -> depth 1 instead of 3)
+    let depth = parts.length;
+    if ((parts[0] === 'packages' || parts[0] === 'apps') && parts.length >= 2) {
+      depth = Math.max(0, parts.length - 2);
+    }
+
+    return { path: d, depth };
+  });
 
   // Structure clarity
   const deepDirectories = dirs.filter(
@@ -255,7 +264,7 @@ export async function analyzeAgentGrounding(
       severity: Severity.Critical,
       message:
         'No root README.md found — agents have no orientation document to start from.',
-      location: { file: join(rootDir, 'README.md'), line: 0 },
+      location: { file: rootDir, line: 0 },
       suggestion:
         'Add a README.md explaining the project structure, entry points, and key conventions.',
     });

@@ -11,7 +11,7 @@ import { AgentGroundingOptions, AgentGroundingReport } from './types';
 /**
  * Agent Grounding Tool Provider
  */
-export const AgentGroundingProvider = createProvider({
+export const AGENT_GROUNDING_PROVIDER = createProvider({
   id: ToolName.AgentGrounding,
   alias: ['agent-grounding', 'grounding', 'navigation'],
   version: '0.9.5',
