@@ -335,19 +335,19 @@ release-one: ## Release one npm spoke: SPOKE=name TYPE=patch|minor|major
 release-all: ## Release all npm spokes: TYPE=patch|minor|major
 	@$(validate_type)
 	@$(call run_if_enabled,$(RELEASE_PRECHECKS),$(MAKE) -C $(ROOT_DIR) release-checks-all-spokes,all-spoke checks)
-	@$(call log_step,Phase 3: Version bump all spokes...)
-	@for spoke in $(CORE_SPOKE) $(MIDDLE_SPOKES) $(CLI_SPOKE); do \
+	@$(call log_step,Phase 3: Version bump all npm spokes...)
+	@for spoke in $(NPM_PUBLISH_SPOKES); do \
 		$(MAKE) -C $(ROOT_DIR) $(call bump_target_for_type,$(TYPE)) SPOKE=$$spoke || exit 1; \
 	done
 	@$(call log_step,Phase 4: Commit + tag all...)
 	@cd $(ROOT_DIR) && git add . && \
 		git commit -m "chore(release): version bumps across spokes" || true
-	@for spoke in $(CORE_SPOKE) $(MIDDLE_SPOKES) $(CLI_SPOKE); do \
+	@for spoke in $(NPM_PUBLISH_SPOKES); do \
 		version=$$(node -p "require('$(ROOT_DIR)/packages/$$spoke/package.json').version"); \
 		cd $(ROOT_DIR) && git tag -f -a "$$spoke-v$$version" -m "Release @aiready/$$spoke v$$version" || true; \
 	done
 	@$(call run_if_enabled,$(RELEASE_PUBLISH),$(call log_step,Phase 5: Publish core...) && $(MAKE) -C $(ROOT_DIR) npm-publish SPOKE=$(CORE_SPOKE) && $(MAKE) -C $(ROOT_DIR) publish SPOKE=$(CORE_SPOKE) OWNER=$(OWNER),publish core)
-	@$(call run_if_enabled,$(RELEASE_PUBLISH),$(call log_step,Phase 6: Publish middle spokes in parallel...) && $(MAKE) $(MAKE_PARALLEL) $(addprefix release-spoke-,$(MIDDLE_SPOKES)),publish middle spokes)
+	@$(call run_if_enabled,$(RELEASE_PUBLISH),$(call log_step,Phase 6: Publish middle spokes in parallel...) && $(MAKE) $(MAKE_PARALLEL) $(addprefix release-spoke-,$(filter-out $(CORE_SPOKE) $(CLI_SPOKE),$(NPM_PUBLISH_SPOKES))),publish middle spokes)
 	@$(call run_if_enabled,$(RELEASE_PUBLISH),$(call log_step,Phase 7: Publish CLI...) && $(MAKE) -C $(ROOT_DIR) npm-publish SPOKE=$(CLI_SPOKE) && $(MAKE) -C $(ROOT_DIR) publish SPOKE=$(CLI_SPOKE) OWNER=$(OWNER),publish cli)
 	@$(call run_if_enabled,$(RELEASE_DISTRIBUTION),$(call log_step,Phase 8: Update distribution channels...) && $(MAKE) -C $(ROOT_DIR) update-distribution,distribution channels)
 	@$(call run_if_enabled,$(RELEASE_PUSH),$(MAKE) sync,sync and push)
