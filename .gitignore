@@ -25,6 +25,7 @@ coverage/
 **/dist/
 *.bundled.*.mjs
 tsup.config.bundled.*.mjs
+*.tsbuildinfo
 
 # AIReady output
 .aiready/
