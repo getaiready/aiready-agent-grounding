@@ -51,6 +51,19 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Idempotency check — skip if this event was already processed
+    const existingEvent = await docClient.get({
+      TableName,
+      Key: { PK: `STRIPE_EVENT#${event.id}`, SK: 'PROCESSED' },
+    });
+    if (existingEvent.Item) {
+      log.info(
+        { eventId: event.id, eventType: event.type },
+        'Duplicate webhook event, skipping'
+      );
+      return NextResponse.json({ received: true, duplicate: true });
+    }
+
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
@@ -439,12 +452,26 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Mark event as processed (TTL: 7 days)
+    await docClient.put({
+      TableName,
+      Item: {
+        PK: `STRIPE_EVENT#${event.id}`,
+        SK: 'PROCESSED',
+        eventType: event.type,
+        processedAt: new Date().toISOString(),
+        ttl: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60, // 7 days
+      },
+    });
+
     return NextResponse.json({ received: true });
   } catch (error) {
-    log.error({ err: error }, 'Webhook event processing failed');
-    return NextResponse.json(
-      { error: 'Webhook handler failed' },
-      { status: 500 }
+    log.error(
+      { err: error, eventId: event?.id, eventType: event?.type },
+      'Webhook event processing failed'
     );
+    // Return 200 to prevent Stripe from retrying business logic errors
+    // (signature verification errors already return 400 above)
+    return NextResponse.json({ received: true, error: 'processing_failed' });
   }
 }

@@ -4,16 +4,30 @@ import {
   bootstrapManagedAccount,
 } from '../lib/aws/vending';
 import { createServerlessSCP, attachSCPToAccount } from '../lib/aws/governance';
+import { CreateManagedAccountSchema } from '../lib/validation/schemas';
 
 export const handler = async (event: any) => {
-  const { userEmail, userName } = JSON.parse(event.body || '{}');
-
-  if (!userEmail || !userName) {
+  let parsed;
+  try {
+    const body = JSON.parse(event.body || '{}');
+    parsed = CreateManagedAccountSchema.safeParse(body);
+  } catch {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Missing userEmail or userName' }),
+      body: JSON.stringify({ error: 'Invalid JSON body' }),
     };
   }
+
+  if (!parsed.success) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'Invalid input',
+        details: parsed.error.flatten().fieldErrors,
+      }),
+    };
+  }
+  const { userEmail, userName } = parsed.data;
 
   try {
     console.log(`Initiating account creation for ${userEmail}...`);
@@ -48,7 +62,6 @@ export const handler = async (event: any) => {
       statusCode: 500,
       body: JSON.stringify({
         error: 'Failed to create or secure managed account',
-        details: error.message,
       }),
     };
   }

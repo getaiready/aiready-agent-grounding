@@ -1,5 +1,11 @@
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 import * as path from 'path';
+
+function validateGitInput(value: string, fieldName: string): void {
+  if (!/^[a-zA-Z0-9_\-./:@]+$/.test(value)) {
+    throw new Error(`Invalid ${fieldName}: contains disallowed characters`);
+  }
+}
 
 export interface SyncOptions {
   workingDir: string; // The local path of the Spoke repo being managed
@@ -31,6 +37,10 @@ export class SyncOrchestrator {
     } = options;
     const hubRemote = 'hub-origin';
 
+    validateGitInput(hubUrl, 'hub URL');
+    validateGitInput(hubBranch, 'hub branch');
+    validateGitInput(prefix, 'prefix');
+
     console.log(`[Sync] Syncing Hub (${hubUrl}) to Spoke at ${workingDir}...`);
 
     try {
@@ -38,12 +48,19 @@ export class SyncOrchestrator {
       this.ensureRemote(workingDir, hubRemote, hubUrl);
 
       // 2. Fetch latest from Hub
-      this.runCommand(workingDir, `git fetch ${hubRemote} ${hubBranch}`);
+      this.runCommand(workingDir, 'git', ['fetch', hubRemote, hubBranch]);
 
       // 3. Perform subtree pull from Hub into Spoke
-      const squashFlag = squash ? '--squash' : '';
-      const command = `git subtree pull --prefix=${prefix} ${hubRemote} ${hubBranch} ${squashFlag} -m "chore: sync from hub ${hubBranch}"`;
-      this.runCommand(workingDir, command);
+      const args = [
+        'subtree',
+        'pull',
+        `--prefix=${prefix}`,
+        hubRemote,
+        hubBranch,
+      ];
+      if (squash) args.push('--squash');
+      args.push('-m', `chore: sync from hub ${hubBranch}`);
+      this.runCommand(workingDir, 'git', args);
 
       console.log(`[Sync] Successfully synced Hub into Spoke.`);
     } catch (error: any) {
@@ -64,12 +81,21 @@ export class SyncOrchestrator {
     const { workingDir, hubUrl, hubBranch, prefix } = options;
     const hubRemote = 'hub-origin';
 
+    validateGitInput(hubUrl, 'hub URL');
+    validateGitInput(hubBranch, 'hub branch');
+    validateGitInput(prefix, 'prefix');
+
     console.log(`[Sync] Pushing Spoke innovations back to Hub (${hubUrl})...`);
 
     try {
       this.ensureRemote(workingDir, hubRemote, hubUrl);
-      const command = `git subtree push --prefix=${prefix} ${hubRemote} ${hubBranch}`;
-      this.runCommand(workingDir, command);
+      this.runCommand(workingDir, 'git', [
+        'subtree',
+        'push',
+        `--prefix=${prefix}`,
+        hubRemote,
+        hubBranch,
+      ]);
       console.log(`[Sync] Successfully pushed back to Hub.`);
     } catch (error: any) {
       console.error(`[Sync] Push to Hub failed: ${error.message}`);
@@ -78,14 +104,24 @@ export class SyncOrchestrator {
   }
 
   private ensureRemote(cwd: string, name: string, url: string): void {
+    validateGitInput(name, 'remote name');
+    validateGitInput(url, 'remote URL');
     try {
-      this.runCommand(cwd, `git remote add ${name} ${url}`);
-    } catch (_e) {
-      this.runCommand(cwd, `git remote set-url ${name} ${url}`);
+      this.runCommand(cwd, 'git', ['remote', 'add', name, url]);
+    } catch (e: any) {
+      if (e.stderr?.includes('already exists')) {
+        this.runCommand(cwd, 'git', ['remote', 'set-url', name, url]);
+      } else {
+        throw e;
+      }
     }
   }
 
-  private runCommand(cwd: string, command: string): string {
-    return execSync(command, { cwd, encoding: 'utf8', stdio: 'pipe' });
+  private runCommand(cwd: string, command: string, args: string[]): string {
+    return execFileSync(command, args, {
+      cwd,
+      encoding: 'utf8',
+      stdio: 'pipe',
+    });
   }
 }

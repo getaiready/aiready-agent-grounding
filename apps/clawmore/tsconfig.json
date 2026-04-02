@@ -23,6 +23,7 @@
     }
   },
   "include": [
+    "sst-env.d.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",

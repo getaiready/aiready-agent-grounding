@@ -2,6 +2,7 @@ import { auth } from '../../../auth';
 import { ProvisioningOrchestrator } from '../../../lib/onboarding/provision-node';
 import { NextResponse } from 'next/server';
 import { getUserStatus, getUserMetadata } from '../../../lib/db';
+import { ProvisionRequestSchema } from '../../../lib/validation/schemas';
 
 export async function POST(req: Request) {
   const session = (await auth()) as any;
@@ -37,15 +38,15 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { userEmail, userName, repoName, coEvolutionOptIn } =
-      await req.json();
-
-    if (!userEmail || !userName || !repoName) {
+    const body = await req.json();
+    const parsed = ProvisionRequestSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Invalid input', details: parsed.error.flatten().fieldErrors },
         { status: 400 }
       );
     }
+    const { userEmail, userName, repoName, coEvolutionOptIn } = parsed.data;
 
     const orchestrator = new ProvisioningOrchestrator(githubToken);
 
@@ -70,10 +71,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error('[ProvisionAPI] Critical Failure:', error);
     return NextResponse.json(
-      {
-        success: false,
-        error: error.message,
-      },
+      { success: false, error: 'Provisioning failed. Please try again later.' },
       { status: 500 }
     );
   }

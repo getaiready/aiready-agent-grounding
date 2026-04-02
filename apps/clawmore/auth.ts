@@ -6,6 +6,7 @@ import { DynamoDBAdapter } from '@auth/dynamodb-adapter';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { timingSafeEqual } from 'crypto';
 
 const dbClient = new DynamoDBClient({
   region: process.env.AWS_REGION || 'ap-southeast-2',
@@ -108,7 +109,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-      allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
           scope: 'read:user user:email repo workflow',
@@ -118,7 +118,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       name: 'Admin Access',
@@ -138,7 +137,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const isCorrectPassword = credentials?.password === adminPassword;
+        const inputPassword = (credentials?.password as string) || '';
+        const isCorrectPassword =
+          inputPassword.length === adminPassword.length &&
+          timingSafeEqual(
+            Buffer.from(inputPassword, 'utf8'),
+            Buffer.from(adminPassword, 'utf8')
+          );
 
         // Use the first email from ADMIN_EMAILS — no hardcoded fallback
         const adminEmails = process.env.ADMIN_EMAILS

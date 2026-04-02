@@ -1,6 +1,9 @@
 import { Octokit } from '@octokit/rest';
 import sodium from 'libsodium-wrappers';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBClient,
+  ConditionalCheckFailedException,
+} from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import {
   createManagedAccount,
@@ -61,17 +64,35 @@ export class ProvisioningOrchestrator {
         `[Provision] Starting for ${userEmail} (Opt-in: ${coEvolutionOptIn})...`
       );
 
-      // 1. AWS Account Management (Warm Pool Pattern)
-      accountId = await findAvailableAccountInPool();
+      // 1. AWS Account Management (Warm Pool Pattern with atomic claiming)
+      const MAX_POOL_ATTEMPTS = 10;
+      for (let attempt = 0; attempt < MAX_POOL_ATTEMPTS; attempt++) {
+        const candidateId = await findAvailableAccountInPool();
+        if (!candidateId) break;
 
-      if (accountId) {
-        console.log(`[Provision] Found warm account ${accountId} in pool.`);
-        await assignAccountToOwner(accountId, userEmail, repoName);
-        // Replenish pool asynchronously — create a new warm account
-        this.replenishWarmPool().catch((err) =>
-          console.error('[Provision] Failed to replenish warm pool:', err)
+        console.log(
+          `[Provision] Found warm account ${candidateId} in pool (attempt ${attempt + 1}).`
         );
-      } else {
+        const claimed = await this.claimAccountAtomically(
+          candidateId,
+          userEmail,
+          repoName
+        );
+        if (claimed) {
+          accountId = candidateId;
+          console.log(`[Provision] Successfully claimed account ${accountId}.`);
+          await assignAccountToOwner(accountId, userEmail, repoName);
+          this.replenishWarmPool().catch((err) =>
+            console.error('[Provision] Failed to replenish warm pool:', err)
+          );
+          break;
+        }
+        console.log(
+          `[Provision] Account ${candidateId} already claimed, trying next...`
+        );
+      }
+
+      if (!accountId) {
         console.log(`[Provision] Pool empty. Creating new account...`);
         const { requestId } = await createManagedAccount(
           userEmail,
@@ -298,10 +319,67 @@ export class ProvisioningOrchestrator {
     );
   }
 
-  /**
-   * Asynchronously creates a new warm pool account to replace the one just taken.
-   * This ensures the pool is always ready for the next client.
-   */
+  private async claimAccountAtomically(
+    accountId: string,
+    userEmail: string,
+    repoName: string
+  ): Promise<boolean> {
+    const tableName = process.env.DYNAMO_TABLE || '';
+    const now = Date.now();
+    const expiresAt = now + 30 * 60 * 1000; // 30 minutes
+
+    try {
+      await docClient.put({
+        TableName: tableName,
+        Item: {
+          PK: `WARM_POOL_CLAIM#${accountId}`,
+          SK: 'CLAIM',
+          userEmail,
+          repoName,
+          claimedAt: now,
+          expiresAt,
+        },
+        ConditionExpression: 'attribute_not_exists(PK)',
+      });
+      return true;
+    } catch (err: any) {
+      if (err instanceof ConditionalCheckFailedException) {
+        return false;
+      }
+      throw err;
+    }
+  }
+
+  private async cleanupExpiredClaims(): Promise<void> {
+    const tableName = process.env.DYNAMO_TABLE || '';
+    const now = Date.now();
+
+    const result = await docClient.query({
+      TableName: tableName,
+      KeyConditionExpression: 'SK = :sk AND begins_with(PK, :prefix)',
+      FilterExpression: 'expiresAt < :now',
+      ExpressionAttributeValues: {
+        ':sk': 'CLAIM',
+        ':prefix': 'WARM_POOL_CLAIM#',
+        ':now': now,
+      },
+    });
+
+    if (!result.Items) return;
+
+    for (const item of result.Items) {
+      try {
+        await docClient.delete({
+          TableName: tableName,
+          Key: { PK: item.PK, SK: item.SK },
+        });
+        console.log(`[Provision] Cleaned up expired claim: ${item.PK}`);
+      } catch (err) {
+        console.error(`[Provision] Failed to clean up claim ${item.PK}:`, err);
+      }
+    }
+  }
+
   private async replenishWarmPool(): Promise<void> {
     const adminEmail = process.env.ADMIN_EMAIL || 'caodanju@gmail.com';
     console.log('[Provision] Replenishing warm pool...');

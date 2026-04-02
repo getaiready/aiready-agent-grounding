@@ -14,7 +14,6 @@ import {
 import {
   IAMClient,
   CreateRoleCommand,
-  AttachRolePolicyCommand,
   CreateOpenIDConnectProviderCommand,
   GetOpenIDConnectProviderCommand,
 } from '@aws-sdk/client-iam';
@@ -362,11 +361,122 @@ export async function bootstrapManagedAccount(
     }
   }
 
-  // 3. Attach AdministratorAccess (for bootstrap/deploy)
+  // 3. Attach least-privilege inline policy for SST serverless deployment
+  const deploymentPolicy = {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Sid: 'LambdaFullAccess',
+        Effect: 'Allow',
+        Action: ['lambda:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'APIGatewayAccess',
+        Effect: 'Allow',
+        Action: ['apigateway:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'DynamoDBAccess',
+        Effect: 'Allow',
+        Action: ['dynamodb:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'S3Access',
+        Effect: 'Allow',
+        Action: ['s3:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'CloudFormationAccess',
+        Effect: 'Allow',
+        Action: ['cloudformation:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'IAMPassRoleAndManageRoles',
+        Effect: 'Allow',
+        Action: [
+          'iam:PassRole',
+          'iam:GetRole',
+          'iam:CreateRole',
+          'iam:DeleteRole',
+          'iam:AttachRolePolicy',
+          'iam:DetachRolePolicy',
+          'iam:PutRolePolicy',
+          'iam:DeleteRolePolicy',
+          'iam:GetRolePolicy',
+          'iam:ListRolePolicies',
+          'iam:ListAttachedRolePolicies',
+          'iam:ListInstanceProfilesForRole',
+          'iam:CreateServiceLinkedRole',
+        ],
+        Resource: '*',
+      },
+      {
+        Sid: 'CloudFrontAccess',
+        Effect: 'Allow',
+        Action: ['cloudfront:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'EventBridgeAccess',
+        Effect: 'Allow',
+        Action: ['events:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'SQSAccess',
+        Effect: 'Allow',
+        Action: ['sqs:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'SNSAccess',
+        Effect: 'Allow',
+        Action: ['sns:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'CloudWatchLogsAccess',
+        Effect: 'Allow',
+        Action: ['logs:*'],
+        Resource: '*',
+      },
+      {
+        Sid: 'STSAccess',
+        Effect: 'Allow',
+        Action: ['sts:GetCallerIdentity'],
+        Resource: '*',
+      },
+      {
+        Sid: 'DeniedServices',
+        Effect: 'Deny',
+        Action: [
+          'organizations:*',
+          'account:*',
+          'billing:*',
+          'ce:*',
+          'savingsplans:*',
+          'cur:*',
+          'iam:DeleteUser',
+          'iam:CreateUser',
+          'iam:AttachUserPolicy',
+          'iam:PutUserPolicy',
+        ],
+        Resource: '*',
+      },
+    ],
+  };
+
+  const { PutRolePolicyCommand } = await import('@aws-sdk/client-iam');
   await iamClient.send(
-    new AttachRolePolicyCommand({
+    new PutRolePolicyCommand({
       RoleName: roleName,
-      PolicyArn: 'arn:aws:iam::aws:policy/AdministratorAccess',
+      PolicyName: 'ClawMore-Serverless-Deploy-Policy',
+      PolicyDocument: JSON.stringify(deploymentPolicy),
     })
   );
 

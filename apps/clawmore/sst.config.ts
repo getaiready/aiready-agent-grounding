@@ -19,19 +19,16 @@ export default $config({
       removal: input?.stage === 'production' ? 'retain' : 'remove',
       home: 'aws',
       providers: {
-        stripe: {
-          version: '~> 0.0.28',
-        },
+        stripe: true,
       },
     };
   },
   async run() {
     const isProd = $app.stage === 'production';
 
-    // Configure the Stripe provider explicitly
+    // Configure the Stripe provider explicitly (matching platform pattern)
     const stripeProvider = new stripe.Provider('StripeProvider', {
-      apiKey:
-        $app.stage === 'local' ? 'sk_test_mock' : process.env.STRIPE_SECRET_KEY,
+      apiKey: process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder',
     });
 
     const domainName = isProd ? 'clawmore.ai' : `${$app.stage}.clawmore.ai`;
@@ -46,49 +43,37 @@ export default $config({
     const SpokeGithubToken = new sst.Secret('SpokeGithubToken');
 
     // --- Stripe Products & Prices (IaC) ---
+    // Note: These are ClawMore-specific Stripe resources, separate from Platform project
 
-    // 1. Managed Platform Subscription ($29/mo - Starter)
-    const platformProduct = new stripe.Product(
-      'PlatformProduct',
+    // 1. Solo Plan ($29/mo)
+    const clawmoreSoloProduct = new stripe.Product(
+      'ClawMoreSoloProduct',
       {
-        name: 'ClawMore Managed Platform',
+        name: 'ClawMore Solo',
         description:
           'Managed AWS infrastructure, AI-powered code fixes, CI/CD integration, and dashboard.',
       },
       { provider: stripeProvider }
     );
 
-    const platformPrice = new stripe.Price(
-      'PlatformPrice',
+    const clawmoreSoloPrice = new stripe.Price(
+      'ClawMoreSoloPrice',
       {
-        product: platformProduct.id,
+        product: clawmoreSoloProduct.id,
         unitAmount: 2900,
         currency: 'usd',
         recurring: { interval: 'month', intervalCount: 1 },
-        metadata: { tier: 'starter' },
+        metadata: { tier: 'solo' },
       },
       { provider: stripeProvider }
     );
 
-    // 1b. Pro tier ($99/mo)
-    const proPrice = new stripe.Price(
-      'ProPrice',
+    // 2. Team Plan ($99/mo)
+    const clawmoreTeamPrice = new stripe.Price(
+      'ClawMoreTeamPrice',
       {
-        product: platformProduct.id,
+        product: clawmoreSoloProduct.id,
         unitAmount: 9900,
-        currency: 'usd',
-        recurring: { interval: 'month', intervalCount: 1 },
-        metadata: { tier: 'pro' },
-      },
-      { provider: stripeProvider }
-    );
-
-    // 1c. Team tier ($299/mo)
-    const teamPrice = new stripe.Price(
-      'TeamPrice',
-      {
-        product: platformProduct.id,
-        unitAmount: 29900,
         currency: 'usd',
         recurring: { interval: 'month', intervalCount: 1 },
         metadata: { tier: 'team' },
@@ -96,33 +81,44 @@ export default $config({
       { provider: stripeProvider }
     );
 
-    // 2. AI Fuel Pack ($10.00 one-time top-up)
-    const fuelPackProduct = new stripe.Product(
-      'FuelPackProduct',
+    // 3. Enterprise Plan ($299/mo)
+    const clawmoreEnterprisePrice = new stripe.Price(
+      'ClawMoreEnterprisePrice',
       {
-        name: 'AI Credit Pack',
+        product: clawmoreSoloProduct.id,
+        unitAmount: 29900,
+        currency: 'usd',
+        recurring: { interval: 'month', intervalCount: 1 },
+        metadata: { tier: 'enterprise' },
+      },
+      { provider: stripeProvider }
+    );
+
+    // 4. AI Fuel Pack ($10.00 one-time top-up)
+    const clawmoreFuelPackProduct = new stripe.Product(
+      'ClawMoreFuelPackProduct',
+      {
+        name: 'ClawMore AI Credit Pack',
         description: '$10 top-up for AI-powered code fixes.',
       },
       { provider: stripeProvider }
     );
 
-    const fuelPackPrice = new stripe.Price(
-      'FuelPackPrice',
+    const clawmoreFuelPackPrice = new stripe.Price(
+      'ClawMoreFuelPackPrice',
       {
-        product: fuelPackProduct.id,
+        product: clawmoreFuelPackProduct.id,
         unitAmount: 1000,
         currency: 'usd',
       },
       { provider: stripeProvider }
     );
 
-    // 4. Mutation Tax ($1.00 per mutation - Metered)
-    // Note: Stripe metered prices require a base price with interval_count >= 1
-    // We'll create a simple recurring price instead
-    const mutationTaxPrice = new stripe.Price(
-      'MutationTaxPrice',
+    // 5. Mutation Tax ($1.00 per mutation)
+    const clawmoreMutationTaxPrice = new stripe.Price(
+      'ClawMoreMutationTaxPrice',
       {
-        product: platformProduct.id,
+        product: clawmoreSoloProduct.id,
         unitAmount: 100,
         currency: 'usd',
         recurring: {
@@ -133,9 +129,9 @@ export default $config({
       { provider: stripeProvider }
     );
 
-    // 3. Stripe Webhook Endpoint — tells Stripe where to send events
+    // 6. Stripe Webhook Endpoint
     const webhookEndpoint = new stripe.WebhookEndpoint(
-      'StripeWebhook',
+      'ClawMoreStripeWebhook',
       {
         url: `https://${domainName}/api/webhooks/stripe`,
         enabledEvents: [
@@ -314,11 +310,11 @@ export default $config({
         table,
         aiQueue,
         bus,
-        platformPrice,
-        proPrice,
-        teamPrice,
-        fuelPackPrice,
-        mutationTaxPrice,
+        clawmoreSoloPrice,
+        clawmoreTeamPrice,
+        clawmoreEnterprisePrice,
+        clawmoreFuelPackPrice,
+        clawmoreMutationTaxPrice,
         StripeSecretKey,
         GithubServiceToken,
         GithubClientSecret,

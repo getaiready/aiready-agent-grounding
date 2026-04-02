@@ -69,6 +69,9 @@ export default auth((request) => {
     response.cookies.set(COOKIE_NAME, locale, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
+      secure: true,
+      httpOnly: true,
+      sameSite: 'lax',
     });
   }
 
